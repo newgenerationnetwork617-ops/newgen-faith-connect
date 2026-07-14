@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
 import { prayerRequests } from "@/lib/mock-data";
-import { HandHeart, Sparkles, Send } from "lucide-react";
-import { useState } from "react";
+import { HandHeart, Sparkles, Send, Check } from "lucide-react";
+import { useMemo, useState } from "react";
+import { submitPrayer, usePrayers } from "@/lib/admin-store";
 
 export const Route = createFileRoute("/prayer")({
   head: () => ({
@@ -17,6 +18,34 @@ export const Route = createFileRoute("/prayer")({
 function PrayerPage() {
   const [tab, setTab] = useState<"prayer" | "praise">("prayer");
   const [text, setText] = useState("");
+  const [anon, setAnon] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [stored] = usePrayers();
+
+  const feed = useMemo(() => {
+    const submitted = stored
+      .filter((p) => p.kind === tab && p.status !== "archived")
+      .map((p) => ({
+        id: p.id,
+        name: p.name,
+        request: p.request,
+        time: new Date(p.createdAt).toLocaleDateString(),
+        prayers: 0,
+      }));
+    return tab === "prayer" ? [...submitted, ...prayerRequests] : submitted;
+  }, [stored, tab]);
+
+  const handleSubmit = () => {
+    if (!text.trim()) return;
+    submitPrayer({
+      name: anon ? "Anonymous" : "Believer",
+      request: text.trim(),
+      kind: tab,
+    });
+    setText("");
+    setSent(true);
+    setTimeout(() => setSent(false), 2200);
+  };
 
   return (
     <MobileShell title="Prayer Wall">
@@ -59,18 +88,29 @@ function PrayerPage() {
           />
           <div className="flex items-center justify-between">
             <label className="flex items-center gap-2 text-xs text-muted-foreground">
-              <input type="checkbox" className="rounded" />
+              <input
+                type="checkbox"
+                className="rounded"
+                checked={anon}
+                onChange={(e) => setAnon(e.target.checked)}
+              />
               Submit anonymously
             </label>
-            <button className="flex items-center gap-2 px-4 py-2 rounded-full bg-hero-gradient text-white text-sm font-semibold shadow-elegant hover:opacity-95 transition">
-              <Send className="size-3.5" /> Submit
+            <button
+              onClick={handleSubmit}
+              className="flex items-center gap-2 px-4 py-2 rounded-full bg-hero-gradient text-white text-sm font-semibold shadow-elegant hover:opacity-95 transition"
+            >
+              {sent ? <><Check className="size-3.5" /> Sent</> : <><Send className="size-3.5" /> Submit</>}
             </button>
           </div>
+          {sent && (
+            <p className="text-xs text-primary">Thank you — your submission was sent to the ministry.</p>
+          )}
         </div>
 
         {/* Feed */}
         <div className="space-y-3">
-          {prayerRequests.map((p) => (
+          {feed.map((p) => (
             <article key={p.id} className="rounded-2xl bg-card border border-border p-4">
               <div className="flex items-center justify-between mb-2">
                 <p className="font-display font-bold text-sm">{p.name}</p>
