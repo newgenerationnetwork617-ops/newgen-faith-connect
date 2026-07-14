@@ -19,18 +19,18 @@ const explore: { to: RowTo; label: string; icon: React.ComponentType<{ className
   { to: "/events", label: "Events", icon: Calendar },
 ];
 
-const settings = [
-  { label: "Profile", icon: User, to: "/auth" as const },
-  { label: "Notifications", icon: Bell, to: "/more" as const },
-  { label: "Appearance", icon: Moon, to: "/more" as const },
-  { label: "Language", icon: Globe, to: "/more" as const },
-  { label: "Privacy", icon: Shield, to: "/more" as const },
+const settings: { to: RowTo; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
+  { label: "Profile", icon: User, to: "/auth" },
+  { label: "Notifications", icon: Bell, to: "/more" },
+  { label: "Appearance", icon: Moon, to: "/more" },
+  { label: "Language", icon: Globe, to: "/more" },
+  { label: "Privacy", icon: Shield, to: "/more" },
 ];
 
-const support = [
-  { label: "About Us", icon: Info, to: "/about" as const },
-  { label: "Contact Us", icon: MessageSquare, to: "/contact" as const },
-  { label: "Terms & Conditions", icon: FileText, to: "/more" as const },
+const support: { to: RowTo; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
+  { label: "About Us", icon: Info, to: "/about" },
+  { label: "Contact Us", icon: MessageSquare, to: "/contact" },
+  { label: "Terms & Conditions", icon: FileText, to: "/more" },
 ];
 
 function MorePage() {
