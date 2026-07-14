@@ -93,7 +93,7 @@ function Group({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-function Row({ to, label, icon: Icon }: { to: "/auth" | "/more" | "/about" | "/contact" | "/teachings" | "/devotional" | "/live" | "/events"; label: string; icon: React.ComponentType<{ className?: string }> }) {
+function Row({ to, label, icon: Icon }: { to: RowTo; label: string; icon: React.ComponentType<{ className?: string }> }) {
   return (
     <Link to={to} className="flex items-center gap-4 p-4 hover:bg-muted/50 transition">
       <div className="size-9 rounded-lg bg-primary/10 text-primary grid place-items-center">
