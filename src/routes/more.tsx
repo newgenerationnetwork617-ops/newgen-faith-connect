@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
 import {
   User, Bell, Moon, Globe, Shield, Info, MessageSquare, FileText,
-  Sparkles, Calendar, Radio, Mic, ChevronRight, LogIn,
+  Sparkles, Calendar, Radio, Mic, ChevronRight, LogIn, ShieldCheck,
 } from "lucide-react";
 
 export const Route = createFileRoute("/more")({
@@ -10,7 +10,7 @@ export const Route = createFileRoute("/more")({
   component: MorePage,
 });
 
-type RowTo = "/auth" | "/more" | "/about" | "/contact" | "/teachings" | "/devotional" | "/live" | "/events";
+type RowTo = "/auth" | "/more" | "/about" | "/contact" | "/teachings" | "/devotional" | "/live" | "/events" | "/admin";
 
 const explore: { to: RowTo; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
   { to: "/teachings", label: "Teachings", icon: Mic },
@@ -30,6 +30,7 @@ const settings: { to: RowTo; label: string; icon: React.ComponentType<{ classNam
 const support: { to: RowTo; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
   { label: "About Us", icon: Info, to: "/about" },
   { label: "Contact Us", icon: MessageSquare, to: "/contact" },
+  { label: "Admin Dashboard", icon: ShieldCheck, to: "/admin" },
   { label: "Terms & Conditions", icon: FileText, to: "/more" },
 ];
 
