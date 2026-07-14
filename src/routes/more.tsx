@@ -10,7 +10,9 @@ export const Route = createFileRoute("/more")({
   component: MorePage,
 });
 
-const explore = [
+type RowTo = "/auth" | "/more" | "/about" | "/contact" | "/teachings" | "/devotional" | "/live" | "/events";
+
+const explore: { to: RowTo; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
   { to: "/teachings", label: "Teachings", icon: Mic },
   { to: "/devotional", label: "Daily Devotional", icon: Sparkles },
   { to: "/live", label: "Live Streaming", icon: Radio },
