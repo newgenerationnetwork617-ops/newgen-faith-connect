@@ -14,7 +14,345 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      announcements: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          publish_at: string
+          published: boolean
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          body?: string
+          created_at?: string
+          id?: string
+          publish_at?: string
+          published?: boolean
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          publish_at?: string
+          published?: boolean
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      community_posts: {
+        Row: {
+          approved: boolean
+          body: string
+          created_at: string
+          id: string
+          name: string
+        }
+        Insert: {
+          approved?: boolean
+          body: string
+          created_at?: string
+          id?: string
+          name?: string
+        }
+        Update: {
+          approved?: boolean
+          body?: string
+          created_at?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      contact_info: {
+        Row: {
+          address: string | null
+          email: string
+          facebook: string | null
+          id: number
+          instagram: string | null
+          updated_at: string
+          whatsapp_numbers: string[]
+          youtube: string
+        }
+        Insert: {
+          address?: string | null
+          email?: string
+          facebook?: string | null
+          id?: number
+          instagram?: string | null
+          updated_at?: string
+          whatsapp_numbers?: string[]
+          youtube?: string
+        }
+        Update: {
+          address?: string | null
+          email?: string
+          facebook?: string | null
+          id?: number
+          instagram?: string | null
+          updated_at?: string
+          whatsapp_numbers?: string[]
+          youtube?: string
+        }
+        Relationships: []
+      }
+      devotionals: {
+        Row: {
+          application: string
+          cover_url: string | null
+          created_at: string
+          id: string
+          memory_verse: string
+          message: string
+          prayer: string
+          publish_at: string
+          published: boolean
+          theme: string
+          title: string
+          updated_at: string
+          verse: string
+        }
+        Insert: {
+          application?: string
+          cover_url?: string | null
+          created_at?: string
+          id?: string
+          memory_verse?: string
+          message?: string
+          prayer?: string
+          publish_at?: string
+          published?: boolean
+          theme?: string
+          title: string
+          updated_at?: string
+          verse?: string
+        }
+        Update: {
+          application?: string
+          cover_url?: string | null
+          created_at?: string
+          id?: string
+          memory_verse?: string
+          message?: string
+          prayer?: string
+          publish_at?: string
+          published?: boolean
+          theme?: string
+          title?: string
+          updated_at?: string
+          verse?: string
+        }
+        Relationships: []
+      }
+      events: {
+        Row: {
+          created_at: string
+          description: string | null
+          event_type: string
+          id: string
+          link: string | null
+          location: string
+          published: boolean
+          starts_at: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          event_type?: string
+          id?: string
+          link?: string | null
+          location?: string
+          published?: boolean
+          starts_at?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          event_type?: string
+          id?: string
+          link?: string | null
+          location?: string
+          published?: boolean
+          starts_at?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      live_streams: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_live: boolean
+          starts_at: string
+          title: string
+          updated_at: string
+          youtube_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_live?: boolean
+          starts_at?: string
+          title: string
+          updated_at?: string
+          youtube_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_live?: boolean
+          starts_at?: string
+          title?: string
+          updated_at?: string
+          youtube_id?: string | null
+        }
+        Relationships: []
+      }
+      prayer_requests: {
+        Row: {
+          approved: boolean
+          created_at: string
+          id: string
+          kind: string
+          name: string
+          request: string
+          status: string
+        }
+        Insert: {
+          approved?: boolean
+          created_at?: string
+          id?: string
+          kind?: string
+          name?: string
+          request: string
+          status?: string
+        }
+        Update: {
+          approved?: boolean
+          created_at?: string
+          id?: string
+          kind?: string
+          name?: string
+          request?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      teachings: {
+        Row: {
+          created_at: string
+          description: string | null
+          duration: string | null
+          id: string
+          kind: string
+          media_url: string | null
+          publish_at: string
+          published: boolean
+          series: string | null
+          speaker: string
+          thumbnail_url: string | null
+          title: string
+          topic: string
+          updated_at: string
+          youtube_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          duration?: string | null
+          id?: string
+          kind?: string
+          media_url?: string | null
+          publish_at?: string
+          published?: boolean
+          series?: string | null
+          speaker?: string
+          thumbnail_url?: string | null
+          title: string
+          topic?: string
+          updated_at?: string
+          youtube_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          duration?: string | null
+          id?: string
+          kind?: string
+          media_url?: string | null
+          publish_at?: string
+          published?: boolean
+          series?: string | null
+          speaker?: string
+          thumbnail_url?: string | null
+          title?: string
+          topic?: string
+          updated_at?: string
+          youtube_id?: string | null
+        }
+        Relationships: []
+      }
+      testimonies: {
+        Row: {
+          approved: boolean
+          created_at: string
+          id: string
+          message: string
+          name: string
+        }
+        Insert: {
+          approved?: boolean
+          created_at?: string
+          id?: string
+          message: string
+          name?: string
+        }
+        Update: {
+          approved?: boolean
+          created_at?: string
+          id?: string
+          message?: string
+          name?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
