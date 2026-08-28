@@ -1,5 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 
+export type AdminRow = Record<string, string | number | boolean | string[] | null>;
+
 export const adminLogin = createServerFn({ method: "POST" })
   .inputValidator((data: { password: string }) => ({ password: String(data?.password ?? "") }))
   .handler(async ({ data }) => {
@@ -36,13 +38,13 @@ export const adminFetch = createServerFn({ method: "POST" })
       .order(orderColumn(data.table), { ascending: false })
       .limit(200);
     if (error) throw new Error(error.message);
-    return { rows: (rows ?? []) as Record<string, unknown>[] };
+    return { rows: (rows ?? []) as AdminRow[] };
   });
 
 export const adminUpsert = createServerFn({ method: "POST" })
-  .inputValidator((data: { table: string; row: Record<string, unknown> }) => ({
+  .inputValidator((data: { table: string; row: AdminRow }) => ({
     table: String(data?.table ?? ""),
-    row: (data?.row ?? {}) as Record<string, unknown>,
+    row: (data?.row ?? {}) as AdminRow,
   }))
   .handler(async ({ data }) => {
     const { requireAdmin, isAdminTable, sanitizeRow } = await import("./admin.server");
@@ -56,7 +58,7 @@ export const adminUpsert = createServerFn({ method: "POST" })
       .select()
       .single();
     if (error) throw new Error(error.message);
-    return { row: row as Record<string, unknown> };
+    return { row: row as AdminRow };
   });
 
 export const adminDelete = createServerFn({ method: "POST" })
