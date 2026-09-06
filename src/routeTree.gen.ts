@@ -17,6 +17,7 @@ import { Route as LiveRouteImport } from './routes/live'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as DevotionalRouteImport } from './routes/devotional'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CommunityRouteImport } from './routes/community'
 import { Route as BibleRouteImport } from './routes/bible'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
@@ -63,6 +64,11 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CommunityRoute = CommunityRouteImport.update({
+  id: '/community',
+  path: '/community',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BibleRoute = BibleRouteImport.update({
   id: '/bible',
   path: '/bible',
@@ -95,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/bible': typeof BibleRoute
+  '/community': typeof CommunityRoute
   '/contact': typeof ContactRoute
   '/devotional': typeof DevotionalRoute
   '/events': typeof EventsRoute
@@ -110,6 +117,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/bible': typeof BibleRoute
+  '/community': typeof CommunityRoute
   '/contact': typeof ContactRoute
   '/devotional': typeof DevotionalRoute
   '/events': typeof EventsRoute
@@ -126,6 +134,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/bible': typeof BibleRoute
+  '/community': typeof CommunityRoute
   '/contact': typeof ContactRoute
   '/devotional': typeof DevotionalRoute
   '/events': typeof EventsRoute
@@ -143,6 +152,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/bible'
+    | '/community'
     | '/contact'
     | '/devotional'
     | '/events'
@@ -158,6 +168,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/bible'
+    | '/community'
     | '/contact'
     | '/devotional'
     | '/events'
@@ -173,6 +184,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/bible'
+    | '/community'
     | '/contact'
     | '/devotional'
     | '/events'
@@ -189,6 +201,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
   BibleRoute: typeof BibleRoute
+  CommunityRoute: typeof CommunityRoute
   ContactRoute: typeof ContactRoute
   DevotionalRoute: typeof DevotionalRoute
   EventsRoute: typeof EventsRoute
@@ -257,6 +270,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/community': {
+      id: '/community'
+      path: '/community'
+      fullPath: '/community'
+      preLoaderRoute: typeof CommunityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/bible': {
       id: '/bible'
       path: '/bible'
@@ -301,6 +321,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
   BibleRoute: BibleRoute,
+  CommunityRoute: CommunityRoute,
   ContactRoute: ContactRoute,
   DevotionalRoute: DevotionalRoute,
   EventsRoute: EventsRoute,
