@@ -11,12 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WatchRouteImport } from './routes/watch'
 import { Route as TeachingsRouteImport } from './routes/teachings'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as PrayerRouteImport } from './routes/prayer'
 import { Route as MoreRouteImport } from './routes/more'
 import { Route as LiveRouteImport } from './routes/live'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as DevotionalRouteImport } from './routes/devotional'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CommunityRouteImport } from './routes/community'
 import { Route as BibleRouteImport } from './routes/bible'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
@@ -31,6 +33,11 @@ const WatchRoute = WatchRouteImport.update({
 const TeachingsRoute = TeachingsRouteImport.update({
   id: '/teachings',
   path: '/teachings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrayerRoute = PrayerRouteImport.update({
@@ -61,6 +68,11 @@ const DevotionalRoute = DevotionalRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommunityRoute = CommunityRouteImport.update({
+  id: '/community',
+  path: '/community',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BibleRoute = BibleRouteImport.update({
@@ -95,12 +107,14 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/bible': typeof BibleRoute
+  '/community': typeof CommunityRoute
   '/contact': typeof ContactRoute
   '/devotional': typeof DevotionalRoute
   '/events': typeof EventsRoute
   '/live': typeof LiveRoute
   '/more': typeof MoreRoute
   '/prayer': typeof PrayerRoute
+  '/search': typeof SearchRoute
   '/teachings': typeof TeachingsRoute
   '/watch': typeof WatchRoute
 }
@@ -110,12 +124,14 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/bible': typeof BibleRoute
+  '/community': typeof CommunityRoute
   '/contact': typeof ContactRoute
   '/devotional': typeof DevotionalRoute
   '/events': typeof EventsRoute
   '/live': typeof LiveRoute
   '/more': typeof MoreRoute
   '/prayer': typeof PrayerRoute
+  '/search': typeof SearchRoute
   '/teachings': typeof TeachingsRoute
   '/watch': typeof WatchRoute
 }
@@ -126,12 +142,14 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/bible': typeof BibleRoute
+  '/community': typeof CommunityRoute
   '/contact': typeof ContactRoute
   '/devotional': typeof DevotionalRoute
   '/events': typeof EventsRoute
   '/live': typeof LiveRoute
   '/more': typeof MoreRoute
   '/prayer': typeof PrayerRoute
+  '/search': typeof SearchRoute
   '/teachings': typeof TeachingsRoute
   '/watch': typeof WatchRoute
 }
@@ -143,12 +161,14 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/bible'
+    | '/community'
     | '/contact'
     | '/devotional'
     | '/events'
     | '/live'
     | '/more'
     | '/prayer'
+    | '/search'
     | '/teachings'
     | '/watch'
   fileRoutesByTo: FileRoutesByTo
@@ -158,12 +178,14 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/bible'
+    | '/community'
     | '/contact'
     | '/devotional'
     | '/events'
     | '/live'
     | '/more'
     | '/prayer'
+    | '/search'
     | '/teachings'
     | '/watch'
   id:
@@ -173,12 +195,14 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/bible'
+    | '/community'
     | '/contact'
     | '/devotional'
     | '/events'
     | '/live'
     | '/more'
     | '/prayer'
+    | '/search'
     | '/teachings'
     | '/watch'
   fileRoutesById: FileRoutesById
@@ -189,12 +213,14 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
   BibleRoute: typeof BibleRoute
+  CommunityRoute: typeof CommunityRoute
   ContactRoute: typeof ContactRoute
   DevotionalRoute: typeof DevotionalRoute
   EventsRoute: typeof EventsRoute
   LiveRoute: typeof LiveRoute
   MoreRoute: typeof MoreRoute
   PrayerRoute: typeof PrayerRoute
+  SearchRoute: typeof SearchRoute
   TeachingsRoute: typeof TeachingsRoute
   WatchRoute: typeof WatchRoute
 }
@@ -213,6 +239,13 @@ declare module '@tanstack/react-router' {
       path: '/teachings'
       fullPath: '/teachings'
       preLoaderRoute: typeof TeachingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/prayer': {
@@ -255,6 +288,13 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/community': {
+      id: '/community'
+      path: '/community'
+      fullPath: '/community'
+      preLoaderRoute: typeof CommunityRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/bible': {
@@ -301,12 +341,14 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
   BibleRoute: BibleRoute,
+  CommunityRoute: CommunityRoute,
   ContactRoute: ContactRoute,
   DevotionalRoute: DevotionalRoute,
   EventsRoute: EventsRoute,
   LiveRoute: LiveRoute,
   MoreRoute: MoreRoute,
   PrayerRoute: PrayerRoute,
+  SearchRoute: SearchRoute,
   TeachingsRoute: TeachingsRoute,
   WatchRoute: WatchRoute,
 }

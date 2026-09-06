@@ -1,106 +1,140 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
-import { featuredMovie, latestTeachings } from "@/lib/mock-data";
-import { Play, Search, Heart, Clock } from "lucide-react";
+import { Play, Search, Youtube } from "lucide-react";
+import { useMemo, useState } from "react";
+import { useTeachings, useContactInfo } from "@/lib/content";
 
 export const Route = createFileRoute("/watch")({
   head: () => ({
     meta: [
-      { title: "Gospel Movies — New Generation Network" },
-      { name: "description", content: "Watch gospel movies and inspiring Christian films." },
+      { title: "Gospel Movies & Films — New Generation Network" },
+      { name: "description", content: "Watch gospel movies, short films and inspiring Christian videos." },
+      { property: "og:title", content: "Gospel Movies & Films — New Generation Network" },
+      { property: "og:description", content: "Watch gospel movies, short films and inspiring Christian videos." },
     ],
   }),
   component: WatchPage,
 });
 
-const categories = ["All", "Movies", "Series", "Short Films", "Documentaries"];
-
 function WatchPage() {
+  const { data = [], isLoading } = useTeachings("video");
+  const { contact } = useContactInfo();
+  const [term, setTerm] = useState("");
+  const [active, setActive] = useState<string | null>(null);
+
+  const results = useMemo(() => {
+    const q = term.trim().toLowerCase();
+    if (!q) return data;
+    return data.filter((t) => `${t.title} ${t.series ?? ""} ${t.topic}`.toLowerCase().includes(q));
+  }, [data, term]);
+
+  const featured = results[0];
+
   return (
     <MobileShell title="Watch">
       <div className="px-5 py-6 space-y-6">
-        {/* Search */}
         <div className="relative">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
           <input
+            value={term}
+            onChange={(e) => setTerm(e.target.value)}
             placeholder="Search gospel films & series"
             className="w-full pl-11 pr-4 py-3 rounded-full bg-muted border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
           />
         </div>
 
-        {/* Categories */}
-        <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-5 px-5">
-          {categories.map((c, i) => (
-            <button
-              key={c}
-              className={`flex-none px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition ${
-                i === 0 ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {c}
-            </button>
-          ))}
-        </div>
+        {isLoading && <p className="text-sm text-muted-foreground">Loading films…</p>}
 
-        {/* Featured */}
-        <section>
-          <p className="text-[10px] uppercase tracking-widest text-primary font-bold mb-2">Continue Watching</p>
-          <div className="rounded-2xl overflow-hidden bg-navy text-navy-foreground shadow-elegant relative">
-            <div className="aspect-video bg-night-gradient relative">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.18),transparent_65%)]" />
-              <div className="absolute inset-0 grid place-items-center">
-                <button className="size-16 rounded-full bg-white text-primary grid place-items-center shadow-2xl">
-                  <Play className="size-7 ml-1" fill="currentColor" />
-                </button>
-              </div>
-              <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/10">
-                <div className="h-full bg-primary-glow" style={{ width: `${featuredMovie.progress * 100}%` }} />
-              </div>
-            </div>
-            <div className="p-5">
-              <p className="text-[10px] uppercase tracking-widest text-accent font-bold">{featuredMovie.series}</p>
-              <h3 className="font-display text-xl font-bold mt-1">{featuredMovie.title}</h3>
-              <p className="text-xs text-white/60 mt-1">{featuredMovie.duration} remaining</p>
-              <div className="flex gap-2 mt-4">
-                <button className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-primary-foreground text-xs font-bold">
-                  <Play className="size-3.5" fill="currentColor" /> Resume
-                </button>
-                <button className="size-9 grid place-items-center rounded-full bg-white/10"><Heart className="size-4" /></button>
-                <button className="size-9 grid place-items-center rounded-full bg-white/10"><Clock className="size-4" /></button>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Grid */}
-        <section>
-          <h2 className="font-display font-bold text-lg mb-3">Latest Releases</h2>
-          <div className="grid grid-cols-2 gap-3">
-            {latestTeachings.map((t) => (
-              <div key={t.id} className="group">
-                <div className="aspect-[3/4] rounded-xl bg-night-gradient relative overflow-hidden shadow-soft">
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(255,255,255,0.15),transparent_65%)]" />
-                  <div className="absolute inset-0 grid place-items-center">
-                    <div className="size-10 rounded-full bg-white/90 text-primary grid place-items-center">
-                      <Play className="size-4 ml-0.5" fill="currentColor" />
-                    </div>
-                  </div>
-                  <div className="absolute bottom-2 right-2 text-[10px] font-bold text-white bg-black/40 px-1.5 py-0.5 rounded">
-                    {t.duration}
-                  </div>
+        {featured && (
+          <section>
+            <p className="text-[10px] uppercase tracking-widest text-primary font-bold mb-2">Featured</p>
+            <div className="rounded-2xl overflow-hidden bg-navy text-navy-foreground shadow-elegant">
+              {featured.youtube_id ? (
+                <div className="aspect-video">
+                  <iframe
+                    className="size-full"
+                    src={`https://www.youtube.com/embed/${featured.youtube_id}`}
+                    title={featured.title}
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture"
+                    allowFullScreen
+                  />
                 </div>
-                <h4 className="font-display font-bold text-sm mt-2 line-clamp-2 leading-snug group-hover:text-primary transition">
-                  {t.title}
-                </h4>
-                <p className="text-[11px] text-muted-foreground">{t.speaker}</p>
+              ) : (
+                <div className="aspect-video bg-night-gradient grid place-items-center">
+                  <Play className="size-10 text-white/70" />
+                </div>
+              )}
+              <div className="p-5">
+                <p className="text-[10px] uppercase tracking-widest text-accent font-bold">
+                  {featured.series ?? featured.topic}
+                </p>
+                <h3 className="font-display text-xl font-bold mt-1">{featured.title}</h3>
+                {featured.duration && <p className="text-xs text-white/60 mt-1">{featured.duration}</p>}
               </div>
-            ))}
-          </div>
-        </section>
+            </div>
+          </section>
+        )}
 
-        <p className="text-xs text-muted-foreground text-center pt-4">
-          Movies stream from the official NGN YouTube channel once connected.
-        </p>
+        {!isLoading && results.length === 0 && (
+          <p className="text-sm text-muted-foreground text-center py-6">
+            No films published yet. Visit our YouTube channel for the latest releases.
+          </p>
+        )}
+
+        {results.length > 1 && (
+          <section>
+            <h2 className="font-display font-bold text-lg mb-3">More to watch</h2>
+            <div className="space-y-3">
+              {results.slice(1).map((t) => (
+                <article key={t.id} className="rounded-2xl bg-card border border-border overflow-hidden">
+                  {active === t.id && t.youtube_id ? (
+                    <div className="aspect-video">
+                      <iframe
+                        className="size-full"
+                        src={`https://www.youtube.com/embed/${t.youtube_id}?autoplay=1`}
+                        title={t.title}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setActive(t.id)}
+                      className="w-full aspect-video bg-night-gradient grid place-items-center relative"
+                    >
+                      {t.thumbnail_url && (
+                        <img src={t.thumbnail_url} alt={t.title} className="absolute inset-0 size-full object-cover" />
+                      )}
+                      <span className="relative size-12 rounded-full bg-white/90 text-primary grid place-items-center">
+                        <Play className="size-5 ml-0.5" fill="currentColor" />
+                      </span>
+                    </button>
+                  )}
+                  <div className="p-4">
+                    <h3 className="font-display font-bold text-sm">{t.title}</h3>
+                    <p className="text-[11px] text-muted-foreground mt-0.5">
+                      {[t.speaker, t.duration].filter(Boolean).join(" • ")}
+                    </p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <a
+          href={contact.youtube}
+          target="_blank"
+          rel="noreferrer"
+          className="flex items-center justify-center gap-2 py-3.5 rounded-xl bg-hero-gradient text-white text-sm font-bold shadow-elegant"
+        >
+          <Youtube className="size-4" /> Visit NGN Official TV
+        </a>
+
+        <Link to="/teachings" className="block text-center text-xs font-bold uppercase tracking-widest text-primary">
+          Browse teachings & studies
+        </Link>
       </div>
     </MobileShell>
   );
