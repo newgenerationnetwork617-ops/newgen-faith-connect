@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WatchRouteImport } from './routes/watch'
 import { Route as TeachingsRouteImport } from './routes/teachings'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as PrayerRouteImport } from './routes/prayer'
 import { Route as MoreRouteImport } from './routes/more'
 import { Route as LiveRouteImport } from './routes/live'
@@ -32,6 +33,11 @@ const WatchRoute = WatchRouteImport.update({
 const TeachingsRoute = TeachingsRouteImport.update({
   id: '/teachings',
   path: '/teachings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrayerRoute = PrayerRouteImport.update({
@@ -108,6 +114,7 @@ export interface FileRoutesByFullPath {
   '/live': typeof LiveRoute
   '/more': typeof MoreRoute
   '/prayer': typeof PrayerRoute
+  '/search': typeof SearchRoute
   '/teachings': typeof TeachingsRoute
   '/watch': typeof WatchRoute
 }
@@ -124,6 +131,7 @@ export interface FileRoutesByTo {
   '/live': typeof LiveRoute
   '/more': typeof MoreRoute
   '/prayer': typeof PrayerRoute
+  '/search': typeof SearchRoute
   '/teachings': typeof TeachingsRoute
   '/watch': typeof WatchRoute
 }
@@ -141,6 +149,7 @@ export interface FileRoutesById {
   '/live': typeof LiveRoute
   '/more': typeof MoreRoute
   '/prayer': typeof PrayerRoute
+  '/search': typeof SearchRoute
   '/teachings': typeof TeachingsRoute
   '/watch': typeof WatchRoute
 }
@@ -159,6 +168,7 @@ export interface FileRouteTypes {
     | '/live'
     | '/more'
     | '/prayer'
+    | '/search'
     | '/teachings'
     | '/watch'
   fileRoutesByTo: FileRoutesByTo
@@ -175,6 +185,7 @@ export interface FileRouteTypes {
     | '/live'
     | '/more'
     | '/prayer'
+    | '/search'
     | '/teachings'
     | '/watch'
   id:
@@ -191,6 +202,7 @@ export interface FileRouteTypes {
     | '/live'
     | '/more'
     | '/prayer'
+    | '/search'
     | '/teachings'
     | '/watch'
   fileRoutesById: FileRoutesById
@@ -208,6 +220,7 @@ export interface RootRouteChildren {
   LiveRoute: typeof LiveRoute
   MoreRoute: typeof MoreRoute
   PrayerRoute: typeof PrayerRoute
+  SearchRoute: typeof SearchRoute
   TeachingsRoute: typeof TeachingsRoute
   WatchRoute: typeof WatchRoute
 }
@@ -226,6 +239,13 @@ declare module '@tanstack/react-router' {
       path: '/teachings'
       fullPath: '/teachings'
       preLoaderRoute: typeof TeachingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/prayer': {
@@ -328,6 +348,7 @@ const rootRouteChildren: RootRouteChildren = {
   LiveRoute: LiveRoute,
   MoreRoute: MoreRoute,
   PrayerRoute: PrayerRoute,
+  SearchRoute: SearchRoute,
   TeachingsRoute: TeachingsRoute,
   WatchRoute: WatchRoute,
 }
