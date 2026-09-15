@@ -4,6 +4,7 @@ import {
   User, Bell, Moon, Globe, Shield, Info, MessageSquare, FileText,
   Sparkles, Calendar, Radio, Mic, ChevronRight, LogIn, ShieldCheck,
 } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/more")({
   head: () => ({ meta: [{ title: "More — New Generation Network" }] }),
@@ -35,6 +36,7 @@ const support: { to: RowTo; label: string; icon: React.ComponentType<{ className
 ];
 
 function MorePage() {
+  const { isAuthenticated, displayName } = useAuth();
   return (
     <MobileShell title="More">
       <div className="px-5 py-6 space-y-6">
@@ -49,8 +51,12 @@ function MorePage() {
               <LogIn className="size-5" />
             </div>
             <div className="flex-1">
-              <p className="font-display font-bold text-base">Sign in to sync</p>
-              <p className="text-xs text-white/70">Bookmarks, notes, prayer & more.</p>
+              <p className="font-display font-bold text-base">
+                {isAuthenticated ? `Hello, ${displayName}` : "Sign in to sync"}
+              </p>
+              <p className="text-xs text-white/70">
+                {isAuthenticated ? "Manage your account" : "Bookmarks, notes, prayer & more."}
+              </p>
             </div>
             <ChevronRight className="size-5" />
           </div>
