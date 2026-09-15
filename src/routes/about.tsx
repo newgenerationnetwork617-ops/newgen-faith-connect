@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
 import { Heart, Sparkles, Shield, BookOpen, HandHeart, Users } from "lucide-react";
-import logo from "@/assets/ngn-logo.png.asset.json";
+import logo from "@/assets/ngn-mark.png.asset.json";
 
 export const Route = createFileRoute("/about")({
   head: () => ({

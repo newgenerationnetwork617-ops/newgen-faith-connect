@@ -5,7 +5,7 @@ import { Mail, Lock, ArrowRight, User as UserIcon, LogOut, ShieldCheck } from "l
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { useAuth, signOut } from "@/hooks/use-auth";
-import logo from "@/assets/ngn-logo.png.asset.json";
+import logo from "@/assets/ngn-mark.png.asset.json";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({

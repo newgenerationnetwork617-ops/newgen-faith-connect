@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { BottomNav } from "./bottom-nav";
 import { Link } from "@tanstack/react-router";
 import { Bell, User } from "lucide-react";
-import logo from "@/assets/ngn-logo.png.asset.json";
+import logo from "@/assets/ngn-mark.png.asset.json";
 
 interface MobileShellProps {
   children: ReactNode;
