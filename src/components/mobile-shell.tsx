@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { BottomNav } from "./bottom-nav";
 import { Link } from "@tanstack/react-router";
 import { Bell, User } from "lucide-react";
+import logo from "@/assets/ngn-mark.png.asset.json";
 
 interface MobileShellProps {
   children: ReactNode;
@@ -17,9 +18,12 @@ export function MobileShell({ children, showTopBar = true, title, hideNav = fals
         {showTopBar && (
           <header className="sticky top-0 z-40 bg-background/85 backdrop-blur-xl border-b border-border/60 px-5 py-4 flex items-center justify-between">
             <Link to="/" className="flex items-center gap-2">
-              <div className="size-8 rounded-lg bg-hero-gradient flex items-center justify-center shadow-elegant">
-                <span className="font-display font-bold text-white text-sm tracking-tighter">N</span>
-              </div>
+              <img
+                src={logo.url}
+                alt="New Generation Network logo"
+                className="size-9 rounded-full shadow-elegant object-contain"
+              />
+
               <div className="leading-tight">
                 <div className="font-display font-bold text-sm tracking-tight">
                   {title ?? "New Generation"}

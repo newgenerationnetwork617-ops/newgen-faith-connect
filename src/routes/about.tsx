@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
 import { Heart, Sparkles, Shield, BookOpen, HandHeart, Users } from "lucide-react";
+import logo from "@/assets/ngn-mark.png.asset.json";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -28,6 +29,7 @@ function AboutPage() {
         <section className="rounded-2xl overflow-hidden bg-hero-gradient text-white p-7 shadow-elegant relative">
           <div className="absolute -right-10 -top-10 size-52 bg-white/15 rounded-full blur-3xl" />
           <div className="relative">
+            <img src={logo.url} alt="New Generation Network logo" className="size-20 mb-4 drop-shadow-lg" />
             <p className="text-[10px] uppercase tracking-[0.2em] text-white/80 font-bold">Our Vision</p>
             <h1 className="font-display text-3xl font-bold leading-tight mt-2 text-balance">
               We are a people raised to raise a righteous generation for Christ.
