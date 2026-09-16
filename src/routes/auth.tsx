@@ -10,10 +10,10 @@ import logo from "@/assets/ngn-mark.png.asset.json";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign in — New Generation Network" },
-      { name: "description", content: "Create an account or sign in to sync your Bible notes, prayers and favourites." },
-      { property: "og:title", content: "Sign in — New Generation Network" },
-      { property: "og:description", content: "Create an account or sign in to sync your journey across devices." },
+      { title: "Team sign in — New Generation Network" },
+      { name: "description", content: "Ministry team sign in for New Generation Network. The app itself is free for everyone, no account required." },
+      { property: "og:title", content: "Team sign in — New Generation Network" },
+      { property: "og:description", content: "Ministry team sign in. Everyone else can use the app freely without an account." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
