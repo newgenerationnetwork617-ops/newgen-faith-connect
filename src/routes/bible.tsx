@@ -46,11 +46,9 @@ function chapterQuery(book: string, chapter: number) {
 }
 
 function BiblePage() {
+  const queryClient = useQueryClient();
   const [book, setBook] = useState("John");
   const [chapter, setChapter] = useState(1);
-  const [verses, setVerses] = useState<Verse[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [pickerBook, setPickerBook] = useState<string | null>(null);
   const [query, setQuery] = useState("");
@@ -62,26 +60,41 @@ function BiblePage() {
     return BIBLE_BOOKS.filter((b) => b.name.toLowerCase().includes(q));
   }, [query]);
 
+  const { data, isPending, isFetching, isError, refetch } = useQuery({
+    ...chapterQuery(book, chapter),
+    placeholderData: keepPreviousData,
+  });
+  const verses: Verse[] = data ?? [];
+  const loading = isPending;
+
+  // Restore last reading position.
   useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    setError(null);
-    fetchChapter(book, chapter)
-      .then((v) => {
-        if (!cancelled) setVerses(v);
-      })
-      .catch((e: unknown) => {
-        if (!cancelled) setError(e instanceof Error ? e.message : "Could not load chapter.");
-      })
-      .finally(() => !cancelled && setLoading(false));
-    return () => {
-      cancelled = true;
-    };
-  }, [book, chapter]);
+    try {
+      const saved = window.localStorage.getItem("ngn-bible-位");
+      if (saved) {
+        const parsed = JSON.parse(saved) as { book?: string; chapter?: number };
+        if (parsed.book && getBook(parsed.book)) {
+          setBook(parsed.book);
+          setChapter(parsed.chapter && parsed.chapter > 0 ? parsed.chapter : 1);
+        }
+      }
+    } catch {
+      /* ignore */
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
+    try {
+      window.localStorage.setItem("ngn-bible-位", JSON.stringify({ book, chapter }));
+    } catch {
+      /* ignore */
+    }
+    // Warm the next chapter so paging feels instant.
+    const next = meta && chapter < meta.chapters ? { book, chapter: chapter + 1 } : null;
+    if (next) void queryClient.prefetchQuery(chapterQuery(next.book, next.chapter));
     if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [book, chapter]);
+  }, [book, chapter, meta, queryClient]);
 
   const goPrev = () => {
     if (chapter > 1) return setChapter(chapter - 1);
