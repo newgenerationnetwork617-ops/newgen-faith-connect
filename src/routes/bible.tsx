@@ -3,12 +3,17 @@ import { MobileShell } from "@/components/mobile-shell";
 import { BIBLE_BOOKS, getBook } from "@/lib/bible-books";
 import { Search, ChevronDown, ChevronLeft, ChevronRight, Loader2, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/bible")({
   head: () => ({
     meta: [
       { title: "Bible — New Generation Network" },
       { name: "description", content: "Read the Holy Bible — all 66 books, all chapters, with navigation and search." },
+      { property: "og:title", content: "Holy Bible — New Generation Network" },
+      { property: "og:description", content: "Read all 66 books of the Holy Bible with easy chapter navigation." },
+      { property: "og:type", content: "article" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: BiblePage,
@@ -19,10 +24,25 @@ type Verse = { verse: number; text: string };
 async function fetchChapter(book: string, chapter: number): Promise<Verse[]> {
   // bible-api.com — free, no key, KJV by default
   const ref = encodeURIComponent(`${book} ${chapter}`);
-  const res = await fetch(`https://bible-api.com/${ref}`);
-  if (!res.ok) throw new Error("Failed to load chapter");
-  const data = (await res.json()) as { verses: { verse: number; text: string }[] };
-  return data.verses.map((v) => ({ verse: v.verse, text: v.text.trim() }));
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 12_000);
+  try {
+    const res = await fetch(`https://bible-api.com/${ref}`, { signal: controller.signal });
+    if (!res.ok) throw new Error("Failed to load chapter");
+    const data = (await res.json()) as { verses?: { verse: number; text: string }[] };
+    return (data.verses ?? []).map((v) => ({ verse: v.verse, text: v.text.trim() }));
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function chapterQuery(book: string, chapter: number) {
+  return {
+    queryKey: ["bible", book, chapter] as const,
+    queryFn: () => fetchChapter(book, chapter),
+    staleTime: Infinity,
+    gcTime: 60 * 60 * 1000,
+  };
 }
 
 function BiblePage() {
