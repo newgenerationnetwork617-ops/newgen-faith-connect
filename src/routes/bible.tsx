@@ -169,13 +169,19 @@ function BiblePage() {
             </div>
           )}
 
-          {error && !loading && (
-            <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-sm text-destructive">
-              {error}. Please check your connection and try again.
+          {isError && !loading && (
+            <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-sm text-destructive space-y-3">
+              <p>Could not load this chapter. Please check your connection and try again.</p>
+              <button
+                onClick={() => void refetch()}
+                className="px-4 py-2 rounded-lg bg-destructive text-destructive-foreground text-xs font-semibold"
+              >
+                {isFetching ? "Retrying…" : "Try again"}
+              </button>
             </div>
           )}
 
-          {!loading && !error && (
+          {!loading && !isError && (
             <div className="space-y-2 text-[15px] leading-relaxed text-foreground">
               {verses.map((v) => (
                 <p key={v.verse} className="group">
