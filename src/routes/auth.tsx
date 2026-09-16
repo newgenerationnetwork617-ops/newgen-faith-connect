@@ -142,9 +142,9 @@ function AuthPage() {
           <div className="absolute -right-10 -top-10 size-40 bg-white/15 blur-3xl rounded-full" />
           <div className="relative">
             <img src={logo.url} alt="New Generation Network logo" className="size-24 mx-auto drop-shadow-lg" />
-            <h1 className="font-display text-2xl font-bold leading-tight mt-3">Raising up a generation for Christ</h1>
+            <h1 className="font-display text-2xl font-bold leading-tight mt-3">Ministry team sign in</h1>
             <p className="text-sm text-white/75 mt-2">
-              Sign in to sync your Bible, prayers, favourites and devotionals across devices.
+              For pastors and admins who manage the app's content. Everyone else can use the whole app free — no account needed.
             </p>
           </div>
         </section>
@@ -241,7 +241,7 @@ function AuthPage() {
           to="/"
           className="w-full block text-center py-3.5 rounded-xl bg-muted font-semibold text-sm text-muted-foreground hover:text-foreground transition"
         >
-          Continue as Guest
+          Back to the app
         </Link>
 
         <p className="text-center text-[11px] text-muted-foreground">
