@@ -1,66 +1,62 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
 import {
-  User, Bell, Moon, Globe, Shield, Info, MessageSquare, FileText,
-  Sparkles, Calendar, Radio, Mic, ChevronRight, LogIn, ShieldCheck,
+  Moon, Sun, Info, MessageSquare, Sparkles, Calendar, Radio, Mic, Users,
+  ChevronRight, ShieldCheck, BookOpen, HandHeart, Search,
 } from "lucide-react";
-import { useAuth } from "@/hooks/use-auth";
+import { useTheme } from "@/hooks/use-theme";
 
 export const Route = createFileRoute("/more")({
-  head: () => ({ meta: [{ title: "More — New Generation Network" }] }),
+  head: () => ({
+    meta: [
+      { title: "More — New Generation Network" },
+      { name: "description", content: "Explore teachings, devotionals, live streams, events and settings on the NGN app." },
+      { property: "og:title", content: "More — New Generation Network" },
+      { property: "og:description", content: "Everything else in the NGN app: teachings, events, appearance settings and support." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
   component: MorePage,
 });
 
-type RowTo = "/auth" | "/more" | "/about" | "/contact" | "/teachings" | "/devotional" | "/live" | "/events" | "/admin";
+type RowTo =
+  | "/auth" | "/more" | "/about" | "/contact" | "/teachings" | "/devotional"
+  | "/live" | "/events" | "/admin" | "/community" | "/bible" | "/prayer" | "/search";
 
-const explore: { to: RowTo; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
+type Item = { to: RowTo; label: string; icon: React.ComponentType<{ className?: string }> };
+
+const explore: Item[] = [
   { to: "/teachings", label: "Teachings", icon: Mic },
   { to: "/devotional", label: "Daily Devotional", icon: Sparkles },
+  { to: "/bible", label: "Holy Bible", icon: BookOpen },
+  { to: "/prayer", label: "Prayer Wall", icon: HandHeart },
+  { to: "/community", label: "Testimonies & Community", icon: Users },
   { to: "/live", label: "Live Streaming", icon: Radio },
   { to: "/events", label: "Events", icon: Calendar },
+  { to: "/search", label: "Search", icon: Search },
 ];
 
-const settings: { to: RowTo; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
-  { label: "Profile", icon: User, to: "/auth" },
-  { label: "Notifications", icon: Bell, to: "/more" },
-  { label: "Appearance", icon: Moon, to: "/more" },
-  { label: "Language", icon: Globe, to: "/more" },
-  { label: "Privacy", icon: Shield, to: "/more" },
-];
-
-const support: { to: RowTo; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
+const support: Item[] = [
   { label: "About Us", icon: Info, to: "/about" },
   { label: "Contact Us", icon: MessageSquare, to: "/contact" },
-  { label: "Admin Dashboard", icon: ShieldCheck, to: "/admin" },
-  { label: "Terms & Conditions", icon: FileText, to: "/more" },
 ];
 
 function MorePage() {
-  const { isAuthenticated, displayName } = useAuth();
+  const { theme, toggle } = useTheme();
+
   return (
     <MobileShell title="More">
       <div className="px-5 py-6 space-y-6">
-        {/* Sign in card */}
-        <Link
-          to="/auth"
-          className="block rounded-2xl bg-hero-gradient text-white p-5 shadow-elegant relative overflow-hidden"
-        >
+        <section className="rounded-2xl bg-hero-gradient text-white p-5 shadow-elegant relative overflow-hidden">
           <div className="absolute -right-8 -top-8 size-32 bg-white/15 blur-3xl rounded-full" />
-          <div className="relative flex items-center gap-4">
-            <div className="size-12 rounded-full bg-white/20 grid place-items-center">
-              <LogIn className="size-5" />
-            </div>
-            <div className="flex-1">
-              <p className="font-display font-bold text-base">
-                {isAuthenticated ? `Hello, ${displayName}` : "Sign in to sync"}
-              </p>
-              <p className="text-xs text-white/70">
-                {isAuthenticated ? "Manage your account" : "Bookmarks, notes, prayer & more."}
-              </p>
-            </div>
-            <ChevronRight className="size-5" />
+          <div className="relative">
+            <p className="font-display font-bold text-base">Everything here is free</p>
+            <p className="text-xs text-white/75 mt-1">
+              No account needed. Read, watch, pray and share testimonies any time.
+            </p>
           </div>
-        </Link>
+        </section>
 
         <Group label="Explore">
           {explore.map((item) => (
@@ -68,16 +64,32 @@ function MorePage() {
           ))}
         </Group>
 
-        <Group label="Settings">
-          {settings.map((item) => (
-            <Row key={item.label} {...item} />
-          ))}
+        <Group label="Appearance">
+          <button onClick={toggle} className="w-full flex items-center gap-4 p-4 hover:bg-muted/50 transition">
+            <div className="size-9 rounded-lg bg-primary/10 text-primary grid place-items-center">
+              {theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
+            </div>
+            <span className="flex-1 text-left text-sm font-semibold">
+              {theme === "dark" ? "Dark mode" : "Light mode"}
+            </span>
+            <span
+              className={`h-6 w-11 rounded-full p-0.5 transition ${theme === "dark" ? "bg-primary" : "bg-muted-foreground/30"}`}
+            >
+              <span
+                className={`block size-5 rounded-full bg-card shadow transition ${theme === "dark" ? "translate-x-5" : ""}`}
+              />
+            </span>
+          </button>
         </Group>
 
         <Group label="Support">
           {support.map((item) => (
             <Row key={item.label} {...item} />
           ))}
+        </Group>
+
+        <Group label="Ministry team">
+          <Row to="/admin" label="Admin dashboard" icon={ShieldCheck} />
         </Group>
 
         <p className="text-center text-[11px] text-muted-foreground pt-2">
@@ -100,7 +112,7 @@ function Group({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-function Row({ to, label, icon: Icon }: { to: RowTo; label: string; icon: React.ComponentType<{ className?: string }> }) {
+function Row({ to, label, icon: Icon }: Item) {
   return (
     <Link to={to} className="flex items-center gap-4 p-4 hover:bg-muted/50 transition">
       <div className="size-9 rounded-lg bg-primary/10 text-primary grid place-items-center">

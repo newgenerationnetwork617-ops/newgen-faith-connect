@@ -3,12 +3,17 @@ import { MobileShell } from "@/components/mobile-shell";
 import { BIBLE_BOOKS, getBook } from "@/lib/bible-books";
 import { Search, ChevronDown, ChevronLeft, ChevronRight, Loader2, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/bible")({
   head: () => ({
     meta: [
       { title: "Bible — New Generation Network" },
       { name: "description", content: "Read the Holy Bible — all 66 books, all chapters, with navigation and search." },
+      { property: "og:title", content: "Holy Bible — New Generation Network" },
+      { property: "og:description", content: "Read all 66 books of the Holy Bible with easy chapter navigation." },
+      { property: "og:type", content: "article" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: BiblePage,
@@ -19,18 +24,31 @@ type Verse = { verse: number; text: string };
 async function fetchChapter(book: string, chapter: number): Promise<Verse[]> {
   // bible-api.com — free, no key, KJV by default
   const ref = encodeURIComponent(`${book} ${chapter}`);
-  const res = await fetch(`https://bible-api.com/${ref}`);
-  if (!res.ok) throw new Error("Failed to load chapter");
-  const data = (await res.json()) as { verses: { verse: number; text: string }[] };
-  return data.verses.map((v) => ({ verse: v.verse, text: v.text.trim() }));
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 12_000);
+  try {
+    const res = await fetch(`https://bible-api.com/${ref}`, { signal: controller.signal });
+    if (!res.ok) throw new Error("Failed to load chapter");
+    const data = (await res.json()) as { verses?: { verse: number; text: string }[] };
+    return (data.verses ?? []).map((v) => ({ verse: v.verse, text: v.text.trim() }));
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function chapterQuery(book: string, chapter: number) {
+  return {
+    queryKey: ["bible", book, chapter] as const,
+    queryFn: () => fetchChapter(book, chapter),
+    staleTime: Infinity,
+    gcTime: 60 * 60 * 1000,
+  };
 }
 
 function BiblePage() {
+  const queryClient = useQueryClient();
   const [book, setBook] = useState("John");
   const [chapter, setChapter] = useState(1);
-  const [verses, setVerses] = useState<Verse[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [pickerBook, setPickerBook] = useState<string | null>(null);
   const [query, setQuery] = useState("");
@@ -42,26 +60,41 @@ function BiblePage() {
     return BIBLE_BOOKS.filter((b) => b.name.toLowerCase().includes(q));
   }, [query]);
 
+  const { data, isPending, isFetching, isError, refetch } = useQuery({
+    ...chapterQuery(book, chapter),
+    placeholderData: keepPreviousData,
+  });
+  const verses: Verse[] = data ?? [];
+  const loading = isPending;
+
+  // Restore last reading position.
   useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    setError(null);
-    fetchChapter(book, chapter)
-      .then((v) => {
-        if (!cancelled) setVerses(v);
-      })
-      .catch((e: unknown) => {
-        if (!cancelled) setError(e instanceof Error ? e.message : "Could not load chapter.");
-      })
-      .finally(() => !cancelled && setLoading(false));
-    return () => {
-      cancelled = true;
-    };
-  }, [book, chapter]);
+    try {
+      const saved = window.localStorage.getItem("ngn-bible-位");
+      if (saved) {
+        const parsed = JSON.parse(saved) as { book?: string; chapter?: number };
+        if (parsed.book && getBook(parsed.book)) {
+          setBook(parsed.book);
+          setChapter(parsed.chapter && parsed.chapter > 0 ? parsed.chapter : 1);
+        }
+      }
+    } catch {
+      /* ignore */
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
+    try {
+      window.localStorage.setItem("ngn-bible-位", JSON.stringify({ book, chapter }));
+    } catch {
+      /* ignore */
+    }
+    // Warm the next chapter so paging feels instant.
+    const next = meta && chapter < meta.chapters ? { book, chapter: chapter + 1 } : null;
+    if (next) void queryClient.prefetchQuery(chapterQuery(next.book, next.chapter));
     if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [book, chapter]);
+  }, [book, chapter, meta, queryClient]);
 
   const goPrev = () => {
     if (chapter > 1) return setChapter(chapter - 1);
@@ -136,13 +169,19 @@ function BiblePage() {
             </div>
           )}
 
-          {error && !loading && (
-            <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-sm text-destructive">
-              {error}. Please check your connection and try again.
+          {isError && !loading && (
+            <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-sm text-destructive space-y-3">
+              <p>Could not load this chapter. Please check your connection and try again.</p>
+              <button
+                onClick={() => void refetch()}
+                className="px-4 py-2 rounded-lg bg-destructive text-destructive-foreground text-xs font-semibold"
+              >
+                {isFetching ? "Retrying…" : "Try again"}
+              </button>
             </div>
           )}
 
-          {!loading && !error && (
+          {!loading && !isError && (
             <div className="space-y-2 text-[15px] leading-relaxed text-foreground">
               {verses.map((v) => (
                 <p key={v.verse} className="group">

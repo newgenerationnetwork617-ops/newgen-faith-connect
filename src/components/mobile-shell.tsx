@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 import { BottomNav } from "./bottom-nav";
 import { Link } from "@tanstack/react-router";
-import { Bell, User } from "lucide-react";
+import { Moon, Sun, Search } from "lucide-react";
+import { useTheme } from "@/hooks/use-theme";
 import logo from "@/assets/ngn-mark.png.asset.json";
 
 interface MobileShellProps {
@@ -12,6 +13,8 @@ interface MobileShellProps {
 }
 
 export function MobileShell({ children, showTopBar = true, title, hideNav = false }: MobileShellProps) {
+  const { theme, toggle } = useTheme();
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="mx-auto max-w-[440px] min-h-screen relative pb-24">
@@ -33,20 +36,21 @@ export function MobileShell({ children, showTopBar = true, title, hideNav = fals
                 )}
               </div>
             </Link>
-            <div className="flex items-center gap-3">
-              <button
-                aria-label="Notifications"
+            <div className="flex items-center gap-2">
+              <Link
+                to="/search"
+                aria-label="Search"
                 className="size-9 rounded-full grid place-items-center text-foreground/70 hover:bg-muted transition"
               >
-                <Bell className="size-4" />
-              </button>
-              <Link
-                to="/auth"
-                aria-label="Profile"
-                className="size-9 rounded-full bg-primary/10 border border-primary/15 grid place-items-center text-primary"
-              >
-                <User className="size-4" />
+                <Search className="size-4" />
               </Link>
+              <button
+                onClick={toggle}
+                aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+                className="size-9 rounded-full bg-primary/10 border border-primary/15 grid place-items-center text-primary hover:bg-primary/15 transition"
+              >
+                {theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
+              </button>
             </div>
           </header>
         )}
