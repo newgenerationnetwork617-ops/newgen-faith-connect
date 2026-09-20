@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
 import { dailyVerse } from "@/lib/mock-data";
 import {
-  BookOpen, HandHeart, Mic, Radio, Play, ArrowRight, Calendar, Users, Search,
+  BookOpen, HandHeart, Mic, Radio, Play, ArrowRight, Calendar, Users, Search, Sparkles,
 } from "lucide-react";
 import {
   useLatestDevotional, useTeachings, useEvents, useAnnouncements, formatDateTime,
@@ -54,8 +54,8 @@ function HomePage() {
           <p className="text-sm text-muted-foreground mt-1">Raising a righteous generation for Christ.</p>
         </section>
 
-        <section className="bg-hero-gradient rounded-3xl p-7 text-white shadow-elegant relative overflow-hidden">
-          <div className="absolute -right-16 -top-16 size-64 bg-white/10 rounded-full blur-3xl" />
+        <section className="bg-hero-gradient rounded-2xl p-7 text-primary-foreground shadow-elegant relative overflow-hidden border border-primary/20">
+          <div className="absolute inset-x-0 bottom-0 h-1 bg-accent" />
           <div className="relative">
             <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/70 mb-4">Daily Bread</p>
             <p className="font-serif italic text-lg leading-snug text-balance">"{dailyVerse.text}"</p>
@@ -122,24 +122,28 @@ function HomePage() {
           </section>
         )}
 
-        {devotional && (
-          <section>
-            <SectionHeader title="Today's Devotional" href="/devotional" />
+        <section>
+          <SectionHeader title="Today's Devotional" href="/devotional" />
+          {devotional ? (
             <Link
               to="/devotional"
-              className="block rounded-2xl bg-card border border-border overflow-hidden shadow-soft hover:-translate-y-0.5 transition"
+              className="block rounded-2xl bg-card border border-border overflow-hidden shadow-soft hover:-translate-y-0.5 transition group"
             >
-              <div className="aspect-[16/7] bg-hero-gradient relative overflow-hidden">
+              <div className="aspect-[16/8] bg-night-gradient relative overflow-hidden">
                 {devotional.cover_url && (
-                  <img src={devotional.cover_url} alt={devotional.title} className="absolute inset-0 size-full object-cover" />
+                  <img src={devotional.cover_url} alt={devotional.title} loading="lazy" className="absolute inset-0 size-full object-cover" />
                 )}
-                <div className="absolute bottom-3 left-4">
-                  <span className="px-2.5 py-1 rounded-full bg-white/20 backdrop-blur text-white text-[10px] font-bold uppercase tracking-widest">
+                <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/25 to-transparent" />
+                <div className="absolute inset-x-5 bottom-4 flex items-end justify-between gap-3">
+                  <span className="px-2.5 py-1 rounded-full bg-accent text-accent-foreground text-[10px] font-bold uppercase tracking-widest">
                     {devotional.theme || "Daily Word"}
                   </span>
+                  <div className="size-9 rounded-full bg-card text-primary grid place-items-center group-hover:translate-x-0.5 transition">
+                    <ArrowRight className="size-4" />
+                  </div>
                 </div>
               </div>
-              <div className="p-5">
+              <div className="p-5 border-l-4 border-accent">
                 <h3 className="font-display font-bold text-xl leading-tight text-balance">{devotional.title}</h3>
                 <p className="mt-2 text-sm text-muted-foreground line-clamp-2">{devotional.message}</p>
                 <p className="mt-3 text-xs font-semibold text-primary tracking-wide">
@@ -147,8 +151,23 @@ function HomePage() {
                 </p>
               </div>
             </Link>
-          </section>
-        )}
+          ) : (
+            <Link
+              to="/devotional"
+              className="flex min-h-44 items-center gap-4 rounded-2xl border border-border bg-card p-5 shadow-soft"
+            >
+              <div className="size-12 shrink-0 rounded-xl bg-primary/10 text-primary grid place-items-center">
+                <Sparkles className="size-5" />
+              </div>
+              <div>
+                <h3 className="font-display font-bold">A fresh word for every day</h3>
+                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                  Scripture, reflection, life application and prayer will appear here when published.
+                </p>
+              </div>
+            </Link>
+          )}
+        </section>
 
         {teachings.length > 0 && (
           <section>

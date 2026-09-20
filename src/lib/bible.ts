@@ -72,7 +72,9 @@ async function getJson(url: string, ms: number): Promise<unknown> {
 }
 
 async function fromPrimary(translation: string, book: string, chapter: number): Promise<Verse[]> {
-  const ref = encodeURIComponent(`${book} ${chapter}`);
+  const expected = chapter === 1 ? ONE_CHAPTER_VERSE_COUNTS[book] : undefined;
+  const reference = expected ? `${book} 1:1-${expected}` : `${book} ${chapter}`;
+  const ref = encodeURIComponent(reference);
   const data = (await getJson(`https://bible-api.com/${ref}?translation=${translation}`, 10_000)) as {
     verses?: { verse: number; text: string }[];
   };
@@ -115,7 +117,7 @@ async function fromBackup(backupId: string, book: string, chapter: number): Prom
 /** Loads a chapter: cache first, then primary source, then a backup source. */
 export async function loadChapter(translation: string, book: string, chapter: number): Promise<Verse[]> {
   const cached = readCachedChapter(translation, book, chapter);
-  if (cached) return cached;
+  if (cached && isCompleteChapter(book, chapter, cached)) return cached;
 
   const t = TRANSLATIONS.find((x) => x.id === translation) ?? TRANSLATIONS[0];
   let lastError: unknown;
