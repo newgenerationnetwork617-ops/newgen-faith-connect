@@ -18,6 +18,14 @@ export const TRANSLATIONS: Translation[] = [
   { id: "oeb-us", label: "OEB", name: "Open English Bible" },
 ];
 
+const ONE_CHAPTER_VERSE_COUNTS: Record<string, number> = {
+  Obadiah: 21,
+  Philemon: 25,
+  "2 John": 13,
+  "3 John": 14,
+  Jude: 25,
+};
+
 const CACHE_PREFIX = "ngn-bible-v2:";
 
 function cacheKey(translation: string, book: string, chapter: number) {
@@ -64,11 +72,21 @@ async function getJson(url: string, ms: number): Promise<unknown> {
 }
 
 async function fromPrimary(translation: string, book: string, chapter: number): Promise<Verse[]> {
-  const ref = encodeURIComponent(`${book} ${chapter}`);
+  const expected = chapter === 1 ? ONE_CHAPTER_VERSE_COUNTS[book] : undefined;
+  const reference = expected ? `${book} 1:1-${expected}` : `${book} ${chapter}`;
+  const ref = encodeURIComponent(reference);
   const data = (await getJson(`https://bible-api.com/${ref}?translation=${translation}`, 10_000)) as {
     verses?: { verse: number; text: string }[];
   };
   return (data.verses ?? []).map((v) => ({ verse: v.verse, text: v.text.replace(/\s+/g, " ").trim() }));
+}
+
+function isCompleteChapter(book: string, chapter: number, verses: Verse[]) {
+  if (verses.length === 0) return false;
+  const ordered = verses.every((verse, index) => verse.verse === index + 1 && verse.text.trim().length > 0);
+  if (!ordered) return false;
+  const expected = chapter === 1 ? ONE_CHAPTER_VERSE_COUNTS[book] : undefined;
+  return expected ? verses.length === expected : true;
 }
 
 type AoNode = { type?: string; number?: number; content?: unknown[] };
@@ -99,14 +117,28 @@ async function fromBackup(backupId: string, book: string, chapter: number): Prom
 /** Loads a chapter: cache first, then primary source, then a backup source. */
 export async function loadChapter(translation: string, book: string, chapter: number): Promise<Verse[]> {
   const cached = readCachedChapter(translation, book, chapter);
-  if (cached) return cached;
+  if (cached && isCompleteChapter(book, chapter, cached)) return cached;
 
   const t = TRANSLATIONS.find((x) => x.id === translation) ?? TRANSLATIONS[0];
   let lastError: unknown;
 
+  // bible-api.com interprets one-chapter references as a single verse. Use the
+  // structured chapter source first for these books so all verses are returned.
+  if (t.backup && ONE_CHAPTER_VERSE_COUNTS[book] && chapter === 1) {
+    try {
+      const verses = await fromBackup(t.backup, book, chapter);
+      if (isCompleteChapter(book, chapter, verses)) {
+        writeCachedChapter(translation, book, chapter, verses);
+        return verses;
+      }
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
   try {
     const verses = await fromPrimary(t.id, book, chapter);
-    if (verses.length > 0) {
+    if (isCompleteChapter(book, chapter, verses)) {
       writeCachedChapter(translation, book, chapter, verses);
       return verses;
     }
@@ -117,7 +149,7 @@ export async function loadChapter(translation: string, book: string, chapter: nu
   if (t.backup) {
     try {
       const verses = await fromBackup(t.backup, book, chapter);
-      if (verses.length > 0) {
+      if (isCompleteChapter(book, chapter, verses)) {
         writeCachedChapter(translation, book, chapter, verses);
         return verses;
       }
