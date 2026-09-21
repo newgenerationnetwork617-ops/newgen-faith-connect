@@ -11,6 +11,8 @@ export const Route = createFileRoute("/teachings")({
       { name: "description", content: "Video and audio teachings, Bible studies, and teaching series." },
       { property: "og:title", content: "Teachings & Sermons — New Generation Network" },
       { property: "og:description", content: "Video and audio teachings, Bible studies, and teaching series." },
+      { property: "og:type", content: "article" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: TeachingsPage,

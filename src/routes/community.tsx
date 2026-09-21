@@ -14,6 +14,8 @@ export const Route = createFileRoute("/community")({
       { name: "description", content: "Share your testimony, encourage others and grow together in Christ." },
       { property: "og:title", content: "Community & Testimonies — New Generation Network" },
       { property: "og:description", content: "Share your testimony, encourage others and grow together in Christ." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: CommunityPage,

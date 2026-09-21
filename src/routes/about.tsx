@@ -8,6 +8,10 @@ export const Route = createFileRoute("/about")({
     meta: [
       { title: "About Us — New Generation Network" },
       { name: "description", content: "Our mission, vision, and core values." },
+      { property: "og:title", content: "About New Generation Network" },
+      { property: "og:description", content: "Our mission, vision, and commitment to raising a righteous generation for Christ." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: AboutPage,

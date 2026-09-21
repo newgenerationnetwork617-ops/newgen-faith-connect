@@ -11,6 +11,8 @@ export const Route = createFileRoute("/watch")({
       { name: "description", content: "Watch gospel movies, short films and inspiring Christian videos." },
       { property: "og:title", content: "Gospel Movies & Films — New Generation Network" },
       { property: "og:description", content: "Watch gospel movies, short films and inspiring Christian videos." },
+      { property: "og:type", content: "video.other" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: WatchPage,

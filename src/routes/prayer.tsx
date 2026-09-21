@@ -12,6 +12,8 @@ export const Route = createFileRoute("/prayer")({
       { name: "description", content: "Submit prayer requests, share praise reports, and stand together in prayer." },
       { property: "og:title", content: "Prayer Wall — New Generation Network" },
       { property: "og:description", content: "Send your prayer request to the ministry and read answered-prayer reports." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: PrayerPage,

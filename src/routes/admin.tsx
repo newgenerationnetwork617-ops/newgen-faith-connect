@@ -17,6 +17,10 @@ export const Route = createFileRoute("/admin")({
     meta: [
       { title: "Admin Dashboard — New Generation Network" },
       { name: "description", content: "Manage devotionals, teachings, events, prayer requests and testimonies." },
+      { property: "og:title", content: "NGN Admin Dashboard" },
+      { property: "og:description", content: "Ministry content management for New Generation Network." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },
     ],
   }),

@@ -10,6 +10,8 @@ export const Route = createFileRoute("/contact")({
       { name: "description", content: "Reach out for prayer, counselling, testimonies and enquiries." },
       { property: "og:title", content: "Contact Us — New Generation Network" },
       { property: "og:description", content: "Reach out for prayer, counselling, testimonies and enquiries." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: ContactPage,
