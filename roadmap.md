@@ -4,4 +4,4 @@
 - [x] Repair complete Bible loading, including all one-chapter books
 - [x] Upgrade home devotional area and devotional reading screen
 - [x] Refine logo-aligned colors and phone layout
-- [ ] Audit route metadata and verify key phone flows
+- [x] Audit route metadata and verify key phone flows
