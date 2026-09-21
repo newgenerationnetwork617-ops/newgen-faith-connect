@@ -16,15 +16,15 @@ export function MobileShell({ children, showTopBar = true, title, hideNav = fals
   const { theme, toggle } = useTheme();
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <div className="mx-auto max-w-[440px] min-h-screen relative pb-24">
+    <div className="min-h-screen bg-secondary/55 text-foreground">
+      <div className="mx-auto max-w-[440px] min-h-screen relative pb-24 bg-background shadow-soft">
         {showTopBar && (
-          <header className="sticky top-0 z-40 bg-background/85 backdrop-blur-xl border-b border-border/60 px-5 py-4 flex items-center justify-between">
+          <header className="sticky top-0 z-40 bg-background/92 backdrop-blur-xl border-b border-border/70 px-5 py-3.5 flex items-center justify-between">
             <Link to="/" className="flex items-center gap-2">
               <img
                 src={logo.url}
                 alt="New Generation Network logo"
-                className="size-9 rounded-full shadow-elegant object-contain"
+                className="size-10 rounded-full border border-primary/15 shadow-soft object-contain"
               />
 
               <div className="leading-tight">

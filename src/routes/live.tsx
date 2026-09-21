@@ -10,6 +10,8 @@ export const Route = createFileRoute("/live")({
       { name: "description", content: "Join our live services, prayer meetings and special broadcasts." },
       { property: "og:title", content: "Live Streaming — New Generation Network" },
       { property: "og:description", content: "Join our live services, prayer meetings and special broadcasts." },
+      { property: "og:type", content: "video.other" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: LivePage,

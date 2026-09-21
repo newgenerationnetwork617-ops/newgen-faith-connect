@@ -344,7 +344,17 @@ function BiblePage() {
                           {list.map((b) => (
                             <button
                               key={b.name}
-                              onClick={() => setPickerBook(b.name)}
+                              onClick={() => {
+                                if (b.chapters === 1) {
+                                  setBook(b.name);
+                                  setChapter(1);
+                                  setPickerOpen(false);
+                                  setPickerBook(null);
+                                  setQuery("");
+                                  return;
+                                }
+                                setPickerBook(b.name);
+                              }}
                               className={`text-left text-sm py-2.5 px-3 rounded-lg font-medium transition ${
                                 b.name === book
                                   ? "bg-primary text-primary-foreground"

@@ -15,7 +15,7 @@ export function BottomNav() {
   return (
     <nav
       className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[440px] z-50
-                 bg-background/90 backdrop-blur-xl border-t border-border
+                 bg-background/95 backdrop-blur-xl border-t border-border shadow-[0_-8px_24px_-20px_var(--navy)]
                  px-4 pt-2 pb-[max(env(safe-area-inset-bottom),0.75rem)]
                  flex items-center justify-between"
     >
@@ -25,10 +25,11 @@ export function BottomNav() {
           <Link
             key={to}
             to={to}
-            className={`flex flex-col items-center justify-center gap-1 flex-1 py-1.5 rounded-lg transition ${
+            className={`relative flex flex-col items-center justify-center gap-1 flex-1 py-1.5 rounded-lg transition ${
               active ? "text-primary" : "text-muted-foreground hover:text-foreground"
             }`}
           >
+            {active && <span className="absolute -top-2 h-0.5 w-7 rounded-full bg-accent" />}
             <Icon className={`size-5 transition ${active ? "scale-110" : ""}`} strokeWidth={active ? 2.4 : 1.8} />
             <span className="text-[10px] font-semibold uppercase tracking-wider">{label}</span>
           </Link>

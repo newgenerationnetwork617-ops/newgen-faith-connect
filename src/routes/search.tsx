@@ -11,6 +11,8 @@ export const Route = createFileRoute("/search")({
       { name: "description", content: "Search devotionals, teachings, films and events across the ministry." },
       { property: "og:title", content: "Search — New Generation Network" },
       { property: "og:description", content: "Search devotionals, teachings, films and events across the ministry." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: SearchPage,

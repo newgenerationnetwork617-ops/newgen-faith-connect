@@ -10,6 +10,8 @@ export const Route = createFileRoute("/events")({
       { name: "description", content: "Services, conferences and online gatherings hosted by New Generation Network." },
       { property: "og:title", content: "Events & Meetings — New Generation Network" },
       { property: "og:description", content: "Services, conferences and online gatherings hosted by New Generation Network." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: EventsPage,
