@@ -21,17 +21,49 @@ export const FALLBACK_CONTACT = {
   address: null as string | null,
 };
 
+const DEVOTIONAL_CACHE = "ngn-devotionals-offline-v1";
+
+function readDevotionalCache(): Devotional[] {
+  try {
+    const raw = window.localStorage.getItem(DEVOTIONAL_CACHE);
+    const parsed = raw ? (JSON.parse(raw) as Devotional[]) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
 export function useDevotionals(limit = 20) {
   return useQuery({
     queryKey: ["devotionals", limit],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("devotionals")
-        .select("*")
-        .order("publish_at", { ascending: false })
-        .limit(limit);
-      if (error) throw error;
-      return data as Devotional[];
+      try {
+        const { data, error } = await supabase
+          .from("devotionals")
+          .select("*")
+          .order("publish_at", { ascending: false })
+          .limit(limit);
+        if (error) throw error;
+        const rows = data as Devotional[];
+        if (typeof window !== "undefined" && rows.length > 0) {
+          try {
+            const merged = [...rows, ...readDevotionalCache().filter((c) => !rows.some((r) => r.id === c.id))]
+              .sort((a, b) => b.publish_at.localeCompare(a.publish_at))
+              .slice(0, 30);
+            window.localStorage.setItem(DEVOTIONAL_CACHE, JSON.stringify(merged));
+          } catch {
+            /* storage unavailable */
+          }
+        }
+        return rows;
+      } catch (err) {
+        // Offline or server unreachable: fall back to devotionals read earlier on this device.
+        if (typeof window !== "undefined") {
+          const cached = readDevotionalCache().slice(0, limit);
+          if (cached.length > 0) return cached;
+        }
+        throw err;
+      }
     },
   });
 }
