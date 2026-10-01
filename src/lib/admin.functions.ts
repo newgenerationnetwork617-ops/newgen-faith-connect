@@ -3,7 +3,7 @@ import { createServerFn } from "@tanstack/react-start";
 export type AdminRow = Record<string, string | number | boolean | string[] | null>;
 
 export const adminLogin = createServerFn({ method: "POST" })
-  .inputValidator((data: { password: string }) => ({ password: String(data?.password ?? "") }))
+  .validator((data: { password: string }) => ({ password: String(data?.password ?? "") }))
   .handler(async ({ data }) => {
     const { passwordMatches, getAdminSession } = await import("./admin.server");
     if (!passwordMatches(data.password)) return { ok: false as const };
@@ -26,7 +26,7 @@ export const adminStatus = createServerFn({ method: "GET" }).handler(async () =>
 });
 
 export const adminFetch = createServerFn({ method: "POST" })
-  .inputValidator((data: { table: string }) => ({ table: String(data?.table ?? "") }))
+  .validator((data: { table: string }) => ({ table: String(data?.table ?? "") }))
   .handler(async ({ data }) => {
     const { requireAdmin, isAdminTable, orderColumn } = await import("./admin.server");
     await requireAdmin();
@@ -42,7 +42,7 @@ export const adminFetch = createServerFn({ method: "POST" })
   });
 
 export const adminUpsert = createServerFn({ method: "POST" })
-  .inputValidator((data: { table: string; row: AdminRow }) => ({
+  .validator((data: { table: string; row: AdminRow }) => ({
     table: String(data?.table ?? ""),
     row: (data?.row ?? {}) as AdminRow,
   }))
@@ -62,7 +62,7 @@ export const adminUpsert = createServerFn({ method: "POST" })
   });
 
 export const adminDelete = createServerFn({ method: "POST" })
-  .inputValidator((data: { table: string; id: string }) => ({
+  .validator((data: { table: string; id: string }) => ({
     table: String(data?.table ?? ""),
     id: String(data?.id ?? ""),
   }))
