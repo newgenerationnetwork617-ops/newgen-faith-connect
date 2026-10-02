@@ -110,7 +110,7 @@ function HomePage() {
         </section>
 
         {nextEvent && (
-          <Link to="/events" className="block rounded-[32px] bg-white p-6 text-navy shadow-2xl" style={{ color: "var(--navy)" }}>
+          <Link to="/events" className="block rounded-[32px] bg-white p-6 text-navy shadow-2xl">
             <div className="mb-4 flex items-center justify-between gap-3">
               <h3 className="font-display text-base font-bold">Upcoming Meeting</h3>
               <span className="truncate text-[10px] font-bold uppercase text-primary">{nextEvent.location}</span>
