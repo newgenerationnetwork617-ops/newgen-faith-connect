@@ -16,45 +16,49 @@ export function MobileShell({ children, showTopBar = true, title, hideNav = fals
   const { theme, toggle } = useTheme();
 
   return (
-    <div className="min-h-screen bg-secondary/55 text-foreground">
-      <div className="mx-auto max-w-[440px] min-h-screen relative pb-24 bg-background shadow-soft">
-        {showTopBar && (
-          <header className="sticky top-0 z-40 bg-background/92 backdrop-blur-xl border-b border-border/70 px-5 py-3.5 flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-2">
-              <img
-                src={logo.url}
-                alt="New Generation Network logo"
-                className="size-10 rounded-full border border-primary/15 shadow-soft object-contain"
-              />
+    <div className="min-h-screen bg-navy text-foreground">
+      <div className="relative mx-auto min-h-screen max-w-[440px] overflow-x-clip bg-background pb-32 shadow-2xl">
+        {/* Ambient celestial glows */}
+        <div className="pointer-events-none absolute -left-20 -top-20 size-72 rounded-full bg-primary/20 blur-[80px]" />
+        <div className="pointer-events-none absolute -right-20 top-[40%] size-64 rounded-full bg-accent/10 blur-[100px]" />
 
+        {showTopBar && (
+          <header className="sticky top-0 z-40 flex items-center justify-between bg-background/80 px-6 pb-4 pt-6 backdrop-blur-xl">
+            <Link to="/" className="flex items-center gap-3">
+              <div className="size-11 rounded-full bg-hero-gradient p-[2px] shadow-lg">
+                <img
+                  src={logo.url}
+                  alt="New Generation Network logo"
+                  className="size-full rounded-full bg-card object-contain"
+                  style={{ backgroundColor: "white" }}
+                />
+              </div>
               <div className="leading-tight">
-                <div className="font-display font-bold text-sm tracking-tight">
-                  {title ?? "New Generation"}
-                </div>
+                <div className="font-display text-xl font-bold tracking-tight">{title ?? "NGN"}</div>
                 {!title && (
-                  <div className="text-[10px] text-muted-foreground tracking-widest uppercase">Network</div>
+                  <div className="text-[9px] font-bold uppercase tracking-[0.2em] text-primary">New Generation Network</div>
                 )}
               </div>
             </Link>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <Link
                 to="/search"
                 aria-label="Search"
-                className="size-9 rounded-full grid place-items-center text-foreground/70 hover:bg-muted transition"
+                className="glass grid size-10 place-items-center rounded-full text-foreground"
               >
-                <Search className="size-4" />
+                <Search className="size-[18px]" />
               </Link>
               <button
                 onClick={toggle}
                 aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-                className="size-9 rounded-full bg-primary/10 border border-primary/15 grid place-items-center text-primary hover:bg-primary/15 transition"
+                className="grid size-10 place-items-center rounded-full bg-accent text-accent-foreground shadow-gold"
               >
-                {theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
+                {theme === "dark" ? <Sun className="size-[18px]" /> : <Moon className="size-[18px]" />}
               </button>
             </div>
           </header>
         )}
-        <main className="flex-1">{children}</main>
+        <main className="relative z-10 flex-1">{children}</main>
         {!hideNav && <BottomNav />}
       </div>
     </div>
