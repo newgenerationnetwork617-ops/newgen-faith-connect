@@ -35,7 +35,7 @@ export function BottomNav() {
 
   return (
     <div className="fixed bottom-0 left-1/2 z-50 w-full max-w-[440px] -translate-x-1/2 px-5 pb-[max(env(safe-area-inset-bottom),1rem)]">
-      <nav className="glass flex h-[68px] items-center justify-around rounded-[28px] px-2 shadow-2xl">
+      <nav className="flex border border-glass-border bg-popover/90 backdrop-blur-2xl h-[68px] items-center justify-around rounded-[28px] px-2 shadow-2xl">
         {side[0].map(renderItem)}
         <div className="flex flex-1 justify-center">
           <Link
