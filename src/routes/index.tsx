@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
 import { dailyVerse } from "@/lib/mock-data";
+import heroSunrise from "@/assets/hero-sunrise.jpg";
 import {
   BookOpen, HandHeart, Mic, Radio, Play, ArrowRight, Calendar, Users, Search, Sparkles,
 } from "lucide-react";
@@ -29,12 +30,14 @@ export const Route = createFileRoute("/")({
 });
 
 const quickTiles = [
-  { to: "/bible", label: "Bible", icon: BookOpen, tone: "bg-card" },
-  { to: "/prayer", label: "Prayer Wall", icon: HandHeart, tone: "bg-card" },
-  { to: "/teachings", label: "Teachings", icon: Mic, tone: "bg-card" },
-  { to: "/community", label: "Community", icon: Users, tone: "bg-card" },
-  { to: "/search", label: "Search", icon: Search, tone: "bg-card" },
-  { to: "/live", label: "Live Now", icon: Radio, tone: "bg-hero-gradient text-white border-transparent" },
+  { to: "/bible", label: "Bible", icon: BookOpen, tone: "text-primary" },
+  { to: "/prayer", label: "Prayer", icon: HandHeart, tone: "text-accent" },
+  { to: "/live", label: "Live", icon: Radio, tone: "text-primary", dot: true },
+  { to: "/events", label: "Events", icon: Calendar, tone: "text-accent" },
+  { to: "/teachings", label: "Teach", icon: Mic, tone: "text-primary" },
+  { to: "/community", label: "Testify", icon: Users, tone: "text-accent" },
+  { to: "/watch", label: "Films", icon: Play, tone: "text-primary" },
+  { to: "/search", label: "Search", icon: Search, tone: "text-accent" },
 ] as const;
 
 function HomePage() {
@@ -43,196 +46,148 @@ function HomePage() {
   const { data: events = [] } = useEvents();
   const { data: announcements = [] } = useAnnouncements();
   const announcement = announcements[0];
-  const featured = teachings[0];
+  const nextEvent = events[0];
 
   return (
     <MobileShell>
-      <div className="px-5 py-6 space-y-8">
-        <section>
-          <p className="text-xs font-semibold uppercase tracking-widest text-primary/70">Peace be with you</p>
-          <h1 className="font-display text-3xl font-bold tracking-tight mt-1">Welcome, Beloved</h1>
-          <p className="text-sm text-muted-foreground mt-1">Raising a righteous generation for Christ.</p>
-        </section>
-
-        <section className="bg-hero-gradient rounded-2xl p-7 text-primary-foreground shadow-elegant relative overflow-hidden border border-primary/20">
-          <div className="absolute inset-x-0 bottom-0 h-1 bg-accent" />
-          <div className="relative">
-            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/70 mb-4">Daily Bread</p>
-            <p className="font-serif italic text-lg leading-snug text-balance">"{dailyVerse.text}"</p>
-            <div className="mt-6 flex items-center justify-between">
-              <div>
-                <p className="text-sm font-semibold">{dailyVerse.reference}</p>
-                <p className="text-[10px] uppercase tracking-widest text-white/60">{dailyVerse.version}</p>
-              </div>
-              <Link
-                to="/bible"
-                className="size-10 rounded-full bg-white text-primary grid place-items-center shadow-lg hover:scale-105 transition"
-                aria-label="Open Bible"
-              >
-                <ArrowRight className="size-4" />
-              </Link>
-            </div>
+      <div className="space-y-7 px-6 pb-6 pt-2">
+        <section className="glass rounded-3xl p-5">
+          <div className="mb-3 flex items-center gap-2">
+            <span className="h-4 w-1.5 rounded-full bg-accent" />
+            <span className="font-display text-[10px] font-bold uppercase tracking-widest text-accent">Verse of the Day</span>
+          </div>
+          <p className="text-sm font-medium leading-relaxed">"{dailyVerse.text}"</p>
+          <div className="mt-3 flex items-center justify-between">
+            <p className="font-display text-xs font-semibold text-primary">
+              {dailyVerse.reference} &bull; {dailyVerse.version}
+            </p>
+            <Link to="/bible" aria-label="Open Bible" className="text-xs font-bold text-primary">
+              Read <ArrowRight className="inline size-3" />
+            </Link>
           </div>
         </section>
 
-        <section className="grid grid-cols-2 gap-3">
-          {quickTiles.map(({ to, label, icon: Icon, tone }) => (
-            <Link
-              key={to}
-              to={to}
-              className={`aspect-[5/4] rounded-2xl border border-border p-4 flex flex-col justify-between transition hover:-translate-y-0.5 hover:shadow-soft ${tone}`}
-            >
-              <div
-                className={`size-10 rounded-xl grid place-items-center ${
-                  tone.includes("text-white") ? "bg-white/15" : "bg-primary/10 text-primary"
-                }`}
-              >
-                <Icon className="size-5" />
-              </div>
-              <span className="font-display font-bold text-sm tracking-tight">{label}</span>
-            </Link>
-          ))}
-        </section>
-
-        {featured && (
-          <section>
-            <SectionHeader title="Featured Cinema" href="/watch" />
-            <Link to="/watch" className="block rounded-2xl overflow-hidden bg-navy text-navy-foreground shadow-soft group">
-              <div className="aspect-video bg-night-gradient relative">
-                {featured.thumbnail_url && (
-                  <img src={featured.thumbnail_url} alt={featured.title} className="absolute inset-0 size-full object-cover" />
-                )}
-                <div className="absolute inset-0 grid place-items-center">
-                  <div className="size-14 rounded-full bg-white/95 text-primary grid place-items-center shadow-xl group-hover:scale-110 transition">
-                    <Play className="size-6 ml-0.5" fill="currentColor" />
-                  </div>
-                </div>
-              </div>
-              <div className="p-5 flex items-center justify-between">
-                <div>
-                  <p className="text-[10px] uppercase tracking-widest text-accent font-bold">
-                    {featured.series ?? featured.topic}
-                  </p>
-                  <h3 className="font-display font-bold text-base mt-1">{featured.title}</h3>
-                  {featured.duration && <p className="text-xs text-white/50 mt-0.5">{featured.duration}</p>}
-                </div>
-                <ArrowRight className="size-5 text-white/60 group-hover:text-white transition" />
-              </div>
-            </Link>
-          </section>
-        )}
-
         <section>
-          <SectionHeader title="Today's Devotional" href="/devotional" />
-          {devotional ? (
-            <Link
-              to="/devotional"
-              className="block rounded-2xl bg-card border border-border overflow-hidden shadow-soft hover:-translate-y-0.5 transition group"
-            >
-              <div className="aspect-[16/8] bg-night-gradient relative overflow-hidden">
-                {devotional.cover_url && (
-                  <img src={devotional.cover_url} alt={devotional.title} loading="lazy" className="absolute inset-0 size-full object-cover" />
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/25 to-transparent" />
-                <div className="absolute inset-x-5 bottom-4 flex items-end justify-between gap-3">
-                  <span className="px-2.5 py-1 rounded-full bg-accent text-accent-foreground text-[10px] font-bold uppercase tracking-widest">
-                    {devotional.theme || "Daily Word"}
-                  </span>
-                  <div className="size-9 rounded-full bg-card text-primary grid place-items-center group-hover:translate-x-0.5 transition">
-                    <ArrowRight className="size-4" />
+          <Link to="/devotional" className="group relative block h-[240px] overflow-hidden rounded-[36px] shadow-2xl">
+            <img
+              src={devotional?.cover_url || heroSunrise}
+              alt={devotional?.title ?? "Sunrise over the mountains"}
+              width={1024}
+              height={640}
+              className="absolute inset-0 size-full object-cover transition duration-700 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/30 to-transparent" />
+            <div className="absolute right-5 top-5 grid size-12 place-items-center rounded-full border border-white/30 bg-white/20 text-white backdrop-blur-md">
+              <ArrowRight className="size-5" />
+            </div>
+            <div className="absolute inset-x-0 bottom-0 p-6 text-white">
+              <span className="mb-2 inline-block rounded-full bg-primary px-2.5 py-1 text-[9px] font-bold uppercase tracking-widest">
+                {devotional ? devotional.theme || "Today's Devotional" : "Today's Devotional"}
+              </span>
+              <h2 className="font-display text-2xl font-bold leading-tight text-balance drop-shadow-lg">
+                {devotional?.title ?? "A fresh word for every day"}
+              </h2>
+              <p className="mt-2 line-clamp-1 text-xs text-white/75">
+                {devotional ? `${devotional.verse} • Tap to read` : "Scripture, reflection and prayer — coming soon"}
+              </p>
+            </div>
+          </Link>
+        </section>
+
+        <section className="grid grid-cols-4 gap-x-3 gap-y-5">
+          {quickTiles.map((t) => {
+            const Icon = t.icon;
+            return (
+              <Link key={t.to} to={t.to} className="group flex flex-col items-center gap-2">
+                <div className={`glass relative grid size-16 place-items-center rounded-[22px] shadow-lg transition group-hover:-translate-y-0.5 ${t.tone}`}>
+                  {"dot" in t && <span className="absolute right-2 top-2 size-2 rounded-full bg-destructive" />}
+                  <Icon className="size-7" strokeWidth={1.6} />
+                </div>
+                <span className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">{t.label}</span>
+              </Link>
+            );
+          })}
+        </section>
+
+        {nextEvent && (
+          <Link to="/events" className="block rounded-[32px] bg-white p-6 text-navy shadow-2xl">
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <h3 className="font-display text-base font-bold">Upcoming Meeting</h3>
+              <span className="truncate text-[10px] font-bold uppercase text-primary">{nextEvent.location}</span>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="grid size-14 shrink-0 place-items-center rounded-2xl border border-navy/10 bg-navy/5 text-center leading-none">
+                <div>
+                  <div className="text-[10px] font-bold uppercase opacity-60">
+                    {new Date(nextEvent.starts_at).toLocaleString("en", { month: "short" })}
                   </div>
+                  <div className="font-display text-xl font-bold">{new Date(nextEvent.starts_at).getDate()}</div>
                 </div>
               </div>
-              <div className="p-5 border-l-4 border-accent">
-                <h3 className="font-display font-bold text-xl leading-tight text-balance">{devotional.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground line-clamp-2">{devotional.message}</p>
-                <p className="mt-3 text-xs font-semibold text-primary tracking-wide">
-                  {devotional.verse} • Read devotional →
-                </p>
+              <div className="min-w-0 flex-1">
+                <h4 className="font-display text-sm font-bold">{nextEvent.title}</h4>
+                <p className="truncate text-xs opacity-60">{formatDateTime(nextEvent.starts_at)}</p>
               </div>
-            </Link>
-          ) : (
-            <Link
-              to="/devotional"
-              className="flex min-h-44 items-center gap-4 rounded-2xl border border-border bg-card p-5 shadow-soft"
-            >
-              <div className="size-12 shrink-0 rounded-xl bg-primary/10 text-primary grid place-items-center">
-                <Sparkles className="size-5" />
-              </div>
-              <div>
-                <h3 className="font-display font-bold">A fresh word for every day</h3>
-                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                  Scripture, reflection, life application and prayer will appear here when published.
-                </p>
-              </div>
-            </Link>
-          )}
-        </section>
+            </div>
+          </Link>
+        )}
 
         {teachings.length > 0 && (
-          <section>
+          <section className="space-y-4">
             <SectionHeader title="Latest Teachings" href="/teachings" />
-            <div className="flex gap-3 overflow-x-auto no-scrollbar -mx-5 px-5">
+            <div className="no-scrollbar -mx-6 flex gap-5 overflow-x-auto px-6 pb-2">
               {teachings.slice(0, 8).map((t) => (
-                <Link key={t.id} to="/teachings" className="flex-none w-[180px] group">
-                  <div className="aspect-[4/5] rounded-xl bg-night-gradient relative overflow-hidden mb-2 shadow-soft">
+                <Link key={t.id} to="/teachings" className="group w-56 shrink-0 space-y-3">
+                  <div className="relative h-32 overflow-hidden rounded-3xl bg-night-gradient shadow-lg">
                     {t.thumbnail_url && (
-                      <img src={t.thumbnail_url} alt={t.title} className="absolute inset-0 size-full object-cover" />
+                      <img src={t.thumbnail_url} alt={t.title} loading="lazy" className="absolute inset-0 size-full object-cover" />
                     )}
-                    <div className="absolute bottom-3 left-3 right-3">
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-accent">{t.topic}</span>
+                    <div className="absolute left-3 top-3 grid size-8 place-items-center rounded-full bg-white/90 text-primary">
+                      <Play className="ml-0.5 size-3.5" fill="currentColor" />
                     </div>
-                    <div className="absolute top-3 right-3 size-8 rounded-full bg-white/90 text-primary grid place-items-center">
-                      <Play className="size-3.5 ml-0.5" fill="currentColor" />
-                    </div>
+                    {t.duration && (
+                      <span className="absolute bottom-3 right-3 rounded-lg bg-navy/70 px-2 py-0.5 text-[10px] text-white backdrop-blur-sm">
+                        {t.duration}
+                      </span>
+                    )}
                   </div>
-                  <h4 className="font-display font-bold text-sm leading-snug line-clamp-2 group-hover:text-primary transition">
-                    {t.title}
-                  </h4>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">
-                    {[t.speaker, t.duration].filter(Boolean).join(" • ")}
-                  </p>
+                  <h5 className="line-clamp-2 text-xs font-semibold leading-snug">{t.title}</h5>
                 </Link>
               ))}
             </div>
           </section>
         )}
 
-        {events.length > 0 && (
+        {events.length > 1 && (
           <section>
-            <SectionHeader title="Upcoming Meetings" href="/events" />
+            <SectionHeader title="More Meetings" href="/events" />
             <div className="space-y-2.5">
-              {events.slice(0, 3).map((e) => (
-                <Link
-                  key={e.id}
-                  to="/events"
-                  className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-primary/30 transition"
-                >
-                  <div className="size-12 rounded-xl bg-primary/10 text-primary grid place-items-center shrink-0">
+              {events.slice(1, 4).map((e) => (
+                <Link key={e.id} to="/events" className="glass flex items-center gap-4 rounded-2xl p-4">
+                  <div className="grid size-11 shrink-0 place-items-center rounded-xl bg-primary/15 text-primary">
                     <Calendar className="size-5" />
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-display font-bold text-sm">{e.title}</p>
-                    <p className="text-xs text-muted-foreground truncate">
-                      {formatDateTime(e.starts_at)} • {e.location}
-                    </p>
+                  <div className="min-w-0 flex-1">
+                    <p className="font-display text-sm font-bold">{e.title}</p>
+                    <p className="truncate text-xs text-muted-foreground">{formatDateTime(e.starts_at)}</p>
                   </div>
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-accent">{e.event_type}</span>
                 </Link>
               ))}
             </div>
           </section>
         )}
 
-        <section className="bg-navy text-navy-foreground rounded-2xl p-6 relative overflow-hidden">
-          <div className="absolute -right-10 -top-10 size-40 bg-primary/40 blur-3xl rounded-full" />
+        <section className="relative overflow-hidden rounded-[32px] bg-hero-gradient p-6 text-white shadow-elegant">
+          <div className="absolute -right-10 -top-10 size-40 rounded-full bg-accent/30 blur-3xl" />
           <div className="relative">
-            <p className="text-[10px] uppercase tracking-widest text-accent font-bold mb-2">Ministry Announcement</p>
+            <p className="mb-2 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-accent">
+              <Sparkles className="size-3" /> Ministry Announcement
+            </p>
             <h3 className="font-display text-xl font-bold leading-tight">
-              {announcement?.title ?? "We are a people raised to raise a righteous generation for Christ."}
+              {announcement?.title ?? "Raising a righteous generation for Christ."}
             </h3>
-            {announcement?.body && <p className="text-sm text-white/60 mt-2">{announcement.body}</p>}
-            <Link to="/about" className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-white">
+            {announcement?.body && <p className="mt-2 text-sm text-white/75">{announcement.body}</p>}
+            <Link to="/about" className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold">
               Read our vision <ArrowRight className="size-3.5" />
             </Link>
           </div>
@@ -245,9 +200,9 @@ function HomePage() {
 function SectionHeader({ title, href }: { title: string; href: string }) {
   return (
     <div className="flex items-baseline justify-between mb-3">
-      <h2 className="font-display text-lg font-bold tracking-tight">{title}</h2>
-      <Link to={href} className="text-[11px] font-bold uppercase tracking-widest text-primary">
-        View all
+      <h2 className="font-display text-lg font-bold">{title}</h2>
+      <Link to={href} className="text-xs font-bold text-primary">
+        Browse all
       </Link>
     </div>
   );
