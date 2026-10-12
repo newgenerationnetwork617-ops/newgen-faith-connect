@@ -1,10 +1,10 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, Play, BookOpen, HandHeart, Menu } from "lucide-react";
+import { Home, Play, MessagesSquare, HandHeart, Menu } from "lucide-react";
 
 const side = [
   [
     { to: "/", label: "Home", icon: Home },
-    { to: "/bible", label: "Bible", icon: BookOpen },
+    { to: "/chat", label: "Chat", icon: MessagesSquare },
   ],
   [
     { to: "/watch", label: "Watch", icon: Play },

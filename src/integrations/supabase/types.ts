@@ -44,6 +44,36 @@ export type Database = {
         }
         Relationships: []
       }
+      chat_messages: {
+        Row: {
+          author_hash: string
+          body: string
+          created_at: string
+          edited_at: string | null
+          hidden: boolean
+          id: string
+          name: string
+        }
+        Insert: {
+          author_hash: string
+          body: string
+          created_at?: string
+          edited_at?: string | null
+          hidden?: boolean
+          id?: string
+          name: string
+        }
+        Update: {
+          author_hash?: string
+          body?: string
+          created_at?: string
+          edited_at?: string | null
+          hidden?: boolean
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
       community_posts: {
         Row: {
           approved: boolean
