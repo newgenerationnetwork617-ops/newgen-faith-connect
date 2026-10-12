@@ -10,7 +10,8 @@ export type AdminTable =
   | "prayer_requests"
   | "testimonies"
   | "community_posts"
-  | "contact_info";
+  | "contact_info"
+  | "chat_messages";
 
 const COLUMNS: Record<AdminTable, string[]> = {
   devotionals: [
@@ -27,6 +28,7 @@ const COLUMNS: Record<AdminTable, string[]> = {
   prayer_requests: ["id", "name", "request", "kind", "status", "approved"],
   testimonies: ["id", "name", "message", "approved"],
   community_posts: ["id", "name", "body", "approved"],
+  chat_messages: ["id", "name", "body", "hidden"],
   contact_info: ["id", "whatsapp_numbers", "email", "youtube", "facebook", "instagram", "address"],
 };
 
@@ -40,6 +42,7 @@ const ORDER: Record<AdminTable, string> = {
   testimonies: "created_at",
   community_posts: "created_at",
   contact_info: "id",
+  chat_messages: "created_at",
 };
 
 export function isAdminTable(value: string): value is AdminTable {

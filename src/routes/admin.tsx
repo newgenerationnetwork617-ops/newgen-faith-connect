@@ -141,6 +141,15 @@ const TABS: TabDef[] = [
     ],
   },
   {
+    key: "chat", table: "chat_messages", label: "Chat", icon: MessageCircle, creatable: false,
+    titleKey: "name", subtitleKeys: ["body"],
+    fields: [
+      { key: "name", label: "Name", type: "text" },
+      { key: "body", label: "Message", type: "textarea" },
+      { key: "hidden", label: "Hidden from chat", type: "bool" },
+    ],
+  },
+  {
     key: "contact", table: "contact_info", label: "Contact", icon: Phone, creatable: false, singleton: true,
     titleKey: "email", subtitleKeys: ["youtube"],
     fields: [
