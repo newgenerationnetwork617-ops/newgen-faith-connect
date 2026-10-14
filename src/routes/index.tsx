@@ -1,3 +1,4 @@
+import { youtubeThumb } from "@/lib/youtube";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
 import { dailyVerse } from "@/lib/mock-data";
@@ -139,8 +140,8 @@ function HomePage() {
               {teachings.slice(0, 8).map((t) => (
                 <Link key={t.id} to="/teachings" className="group w-56 shrink-0 space-y-3">
                   <div className="relative h-32 overflow-hidden rounded-3xl bg-night-gradient shadow-lg">
-                    {t.thumbnail_url && (
-                      <img src={t.thumbnail_url} alt={t.title} loading="lazy" className="absolute inset-0 size-full object-cover" />
+                    {(t.thumbnail_url || youtubeThumb(t.youtube_id)) && (
+                      <img src={t.thumbnail_url || youtubeThumb(t.youtube_id)!} alt={t.title} loading="lazy" className="absolute inset-0 size-full object-cover" />
                     )}
                     <div className="absolute left-3 top-3 grid size-8 place-items-center rounded-full bg-white/90 text-primary">
                       <Play className="ml-0.5 size-3.5" fill="currentColor" />

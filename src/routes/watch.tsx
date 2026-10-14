@@ -1,3 +1,4 @@
+import { youtubeEmbed, youtubeId, youtubeThumb } from "@/lib/youtube";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
 import { Play, Search, Youtube } from "lucide-react";
@@ -51,11 +52,11 @@ function WatchPage() {
           <section>
             <p className="text-[10px] uppercase tracking-widest text-primary font-bold mb-2">Featured</p>
             <div className="rounded-2xl overflow-hidden bg-navy text-navy-foreground shadow-elegant">
-              {featured.youtube_id ? (
+              {youtubeId(featured.youtube_id) ? (
                 <div className="aspect-video">
                   <iframe
                     className="size-full"
-                    src={`https://www.youtube.com/embed/${featured.youtube_id}`}
+                    src={youtubeEmbed(featured.youtube_id)!}
                     title={featured.title}
                     loading="lazy"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture"
@@ -90,11 +91,11 @@ function WatchPage() {
             <div className="space-y-3">
               {results.slice(1).map((t) => (
                 <article key={t.id} className="rounded-2xl bg-card border border-border overflow-hidden">
-                  {active === t.id && t.youtube_id ? (
+                  {active === t.id && youtubeId(t.youtube_id) ? (
                     <div className="aspect-video">
                       <iframe
                         className="size-full"
-                        src={`https://www.youtube.com/embed/${t.youtube_id}?autoplay=1`}
+                        src={youtubeEmbed(t.youtube_id, true)!}
                         title={t.title}
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture"
                         allowFullScreen
@@ -105,8 +106,8 @@ function WatchPage() {
                       onClick={() => setActive(t.id)}
                       className="w-full aspect-video bg-night-gradient grid place-items-center relative"
                     >
-                      {t.thumbnail_url && (
-                        <img src={t.thumbnail_url} alt={t.title} className="absolute inset-0 size-full object-cover" />
+                      {(t.thumbnail_url || youtubeThumb(t.youtube_id)) && (
+                        <img src={t.thumbnail_url || youtubeThumb(t.youtube_id)!} alt={t.title} className="absolute inset-0 size-full object-cover" />
                       )}
                       <span className="relative size-12 rounded-full bg-white/90 text-primary grid place-items-center">
                         <Play className="size-5 ml-0.5" fill="currentColor" />

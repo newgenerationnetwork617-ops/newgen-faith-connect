@@ -68,7 +68,7 @@ const TABS: TabDef[] = [
       { key: "topic", label: "Topic", type: "text" },
       { key: "series", label: "Series", type: "text" },
       { key: "kind", label: "Type (video / audio / study)", type: "text" },
-      { key: "youtube_id", label: "YouTube video ID", type: "text", placeholder: "e.g. dQw4w9WgXcQ" },
+      { key: "youtube_id", label: "YouTube link", type: "text", placeholder: "Paste the YouTube link or video ID" },
       { key: "media_url", label: "Audio / file URL", type: "text" },
       { key: "thumbnail_url", label: "Thumbnail URL", type: "text" },
       { key: "duration", label: "Duration", type: "text", placeholder: "42:10" },
@@ -105,7 +105,7 @@ const TABS: TabDef[] = [
     titleKey: "title", subtitleKeys: ["youtube_id"],
     fields: [
       { key: "title", label: "Title", type: "text" },
-      { key: "youtube_id", label: "YouTube video / live ID", type: "text" },
+      { key: "youtube_id", label: "YouTube link (video or live)", type: "text" },
       { key: "starts_at", label: "Starts at", type: "datetime" },
       { key: "is_live", label: "Currently live", type: "bool" },
       { key: "description", label: "Description", type: "textarea" },

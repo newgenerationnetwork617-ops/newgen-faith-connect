@@ -1,5 +1,6 @@
 import { useSession } from "@tanstack/react-start/server";
 import { createHash, timingSafeEqual } from "node:crypto";
+import { youtubeId } from "./youtube";
 
 export type AdminTable =
   | "devotionals"
@@ -58,6 +59,9 @@ export function sanitizeRow(table: AdminTable, row: Record<string, unknown>) {
   const out: Record<string, unknown> = {};
   for (const key of allowed) {
     if (key in row && row[key] !== undefined) out[key] = row[key];
+  }
+  if (typeof out.youtube_id === "string" && out.youtube_id) {
+    out.youtube_id = youtubeId(out.youtube_id) ?? out.youtube_id;
   }
   return out;
 }
