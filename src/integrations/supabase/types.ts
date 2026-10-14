@@ -44,8 +44,34 @@ export type Database = {
         }
         Relationships: []
       }
+      chat_members: {
+        Row: {
+          author_hash: string
+          created_at: string
+          id: string
+          last_seen: string
+          name: string
+        }
+        Insert: {
+          author_hash: string
+          created_at?: string
+          id?: string
+          last_seen?: string
+          name?: string
+        }
+        Update: {
+          author_hash?: string
+          created_at?: string
+          id?: string
+          last_seen?: string
+          name?: string
+        }
+        Relationships: []
+      }
       chat_messages: {
         Row: {
+          audio_path: string | null
+          audio_seconds: number | null
           author_hash: string
           body: string
           created_at: string
@@ -53,17 +79,25 @@ export type Database = {
           hidden: boolean
           id: string
           name: string
+          recipient_id: string | null
+          sender_id: string | null
         }
         Insert: {
+          audio_path?: string | null
+          audio_seconds?: number | null
           author_hash: string
-          body: string
+          body?: string
           created_at?: string
           edited_at?: string | null
           hidden?: boolean
           id?: string
           name: string
+          recipient_id?: string | null
+          sender_id?: string | null
         }
         Update: {
+          audio_path?: string | null
+          audio_seconds?: number | null
           author_hash?: string
           body?: string
           created_at?: string
@@ -71,6 +105,8 @@ export type Database = {
           hidden?: boolean
           id?: string
           name?: string
+          recipient_id?: string | null
+          sender_id?: string | null
         }
         Relationships: []
       }
