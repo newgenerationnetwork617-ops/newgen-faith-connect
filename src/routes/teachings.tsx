@@ -1,3 +1,4 @@
+import { youtubeEmbed, youtubeId, youtubeThumb } from "@/lib/youtube";
 import { createFileRoute } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
 import { Search, Play, Headphones, BookOpenCheck } from "lucide-react";
@@ -75,11 +76,11 @@ function TeachingsPage() {
         <div className="space-y-3">
           {results.map((t) => (
             <article key={t.id} className="rounded-2xl bg-card border border-border overflow-hidden">
-              {t.youtube_id ? (
+              {youtubeId(t.youtube_id) ? (
                 <div className="aspect-video bg-navy">
                   <iframe
                     className="size-full"
-                    src={`https://www.youtube.com/embed/${t.youtube_id}`}
+                    src={youtubeEmbed(t.youtube_id)!}
                     title={t.title}
                     loading="lazy"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture"

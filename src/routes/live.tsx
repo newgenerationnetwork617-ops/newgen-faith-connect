@@ -1,3 +1,4 @@
+import { youtubeEmbed, youtubeId, youtubeThumb } from "@/lib/youtube";
 import { createFileRoute } from "@tanstack/react-router";
 import { MobileShell } from "@/components/mobile-shell";
 import { Radio, Youtube, Calendar } from "lucide-react";
@@ -26,11 +27,11 @@ function LivePage() {
     <MobileShell title="Live">
       <div className="px-5 py-6 space-y-6">
         <section className="rounded-2xl bg-navy text-navy-foreground overflow-hidden shadow-elegant">
-          {live?.youtube_id ? (
+          {youtubeId(live?.youtube_id) ? (
             <div className="aspect-video">
               <iframe
                 className="size-full"
-                src={`https://www.youtube.com/embed/${live.youtube_id}`}
+                src={youtubeEmbed(live.youtube_id)!}
                 title={live.title}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture"
                 allowFullScreen
