@@ -15,6 +15,13 @@
       "when": 1791999424973,
       "tag": "0001_chat_voice_notes_and_private_chat",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792053371471,
+      "tag": "0002_allow_voice_only_chat_messages",
+      "breakpoints": true
     }
   ]
 }
