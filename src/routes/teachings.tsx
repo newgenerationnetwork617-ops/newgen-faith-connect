@@ -76,7 +76,7 @@ function TeachingsPage() {
         <div className="space-y-3">
           {results.map((t) => (
             <article key={t.id} className="rounded-2xl bg-card border border-border overflow-hidden">
-              {youtubeId(t.youtube_id) ? (
+              {youtubeEmbed(t.youtube_id) ? (
                 <div className="aspect-video bg-navy">
                   <iframe
                     className="size-full"
