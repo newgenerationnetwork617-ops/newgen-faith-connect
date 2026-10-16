@@ -40,6 +40,7 @@ type TabDef = {
   subtitleKeys: string[];
   creatable: boolean;
   singleton?: boolean;
+  scope?: "public" | "private";
 };
 
 const TABS: TabDef[] = [
@@ -67,8 +68,8 @@ const TABS: TabDef[] = [
       { key: "speaker", label: "Speaker", type: "text" },
       { key: "topic", label: "Topic", type: "text" },
       { key: "series", label: "Series", type: "text" },
-      { key: "kind", label: "Type (video / audio / study)", type: "text" },
-      { key: "youtube_id", label: "YouTube link", type: "text", placeholder: "Paste the YouTube link or video ID" },
+      { key: "kind", label: "Type: video, audio or study (lowercase is fine either way)", type: "text", placeholder: "video" },
+      { key: "youtube_id", label: "YouTube or Facebook video link", type: "text", placeholder: "Paste the YouTube or Facebook video link" },
       { key: "media_url", label: "Audio / file URL", type: "text" },
       { key: "thumbnail_url", label: "Thumbnail URL", type: "text" },
       { key: "duration", label: "Duration", type: "text", placeholder: "42:10" },
@@ -141,12 +142,19 @@ const TABS: TabDef[] = [
     ],
   },
   {
-    key: "chat", table: "chat_messages", label: "Chat", icon: MessageCircle, creatable: false,
+    key: "chat", table: "chat_messages", scope: "public", label: "Community chat", icon: MessageCircle, creatable: false,
     titleKey: "name", subtitleKeys: ["body"],
     fields: [
       { key: "name", label: "Name", type: "text" },
       { key: "body", label: "Message", type: "textarea" },
       { key: "hidden", label: "Hidden from chat", type: "bool" },
+    ],
+  },
+  {
+    key: "private_chat", table: "chat_messages", scope: "private", label: "Private chats", icon: Lock, creatable: false,
+    titleKey: "name", subtitleKeys: ["body"],
+    fields: [
+      { key: "hidden", label: "Hide this private message (only for abuse reports)", type: "bool" },
     ],
   },
   {
@@ -256,15 +264,15 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   const [editing, setEditing] = useState<AdminRow | null>(null);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["admin", tab.table],
-    queryFn: () => fetchRows({ data: { table: tab.table } }),
+    queryKey: ["admin", tab.key],
+    queryFn: () => fetchRows({ data: { table: tab.table, scope: tab.scope } }),
   });
 
   const saveMutation = useMutation({
     mutationFn: (row: AdminRow) => upsert({ data: { table: tab.table, row } }),
     onSuccess: () => {
       setEditing(null);
-      qc.invalidateQueries({ queryKey: ["admin", tab.table] });
+      qc.invalidateQueries({ queryKey: ["admin", tab.key] });
       qc.invalidateQueries();
     },
   });
@@ -272,7 +280,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   const deleteMutation = useMutation({
     mutationFn: (id: string) => remove({ data: { table: tab.table, id } }),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["admin", tab.table] });
+      qc.invalidateQueries({ queryKey: ["admin", tab.key] });
       qc.invalidateQueries();
     },
   });

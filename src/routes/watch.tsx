@@ -52,7 +52,7 @@ function WatchPage() {
           <section>
             <p className="text-[10px] uppercase tracking-widest text-primary font-bold mb-2">Featured</p>
             <div className="rounded-2xl overflow-hidden bg-navy text-navy-foreground shadow-elegant">
-              {youtubeId(featured.youtube_id) ? (
+              {youtubeEmbed(featured.youtube_id) ? (
                 <div className="aspect-video">
                   <iframe
                     className="size-full"
@@ -91,7 +91,7 @@ function WatchPage() {
             <div className="space-y-3">
               {results.slice(1).map((t) => (
                 <article key={t.id} className="rounded-2xl bg-card border border-border overflow-hidden">
-                  {active === t.id && youtubeId(t.youtube_id) ? (
+                  {active === t.id && youtubeEmbed(t.youtube_id) ? (
                     <div className="aspect-video">
                       <iframe
                         className="size-full"

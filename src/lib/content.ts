@@ -77,8 +77,8 @@ export function useTeachings(kind?: string) {
   return useQuery({
     queryKey: ["teachings", kind ?? "all"],
     queryFn: async () => {
-      let q = supabase.from("teachings").select("*").order("publish_at", { ascending: false }).limit(60);
-      if (kind) q = q.eq("kind", kind);
+      let q = supabase.from("teachings").select("*").order("publish_at", { ascending: false }).limit(200);
+      if (kind) q = q.ilike("kind", kind);
       const { data, error } = await q;
       if (error) throw error;
       return data as Teaching[];

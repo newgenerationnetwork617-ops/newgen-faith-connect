@@ -82,6 +82,7 @@ function ChatPage() {
   const [memberId, setMemberId] = useState<string | null>(null);
   const [online, setOnline] = useState<Record<string, string>>({});
   const [name, setName] = useState("");
+  const [savedName, setSavedName] = useState("");
   const [text, setText] = useState("");
   const [mine, setMine] = useState<string[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -98,6 +99,7 @@ function ChatPage() {
   useEffect(() => {
     const n = localStorage.getItem(NAME_KEY) ?? "";
     setName(n);
+    setSavedName(n.trim());
     setMine(JSON.parse(localStorage.getItem(MINE_KEY) ?? "[]") as string[]);
     setNotify(localStorage.getItem(NOTIFY_KEY) === "1" && "Notification" in window && Notification.permission === "granted");
     join({ data: { token: getToken(), name: n || undefined } }).then((r) => setMemberId(r.memberId)).catch(() => {});
@@ -205,11 +207,19 @@ function ChatPage() {
     else setError("Notifications were blocked in your phone settings.");
   };
 
+  const saveName = () => {
+    const n = name.trim();
+    if (!n) return;
+    localStorage.setItem(NAME_KEY, n);
+    setSavedName(n);
+    join({ data: { token: getToken(), name: n } }).catch(() => {});
+  };
+
   const doSend = async (payload: { body?: string; audio?: string; audioType?: string; seconds?: number }) => {
     setBusy(true);
     setError("");
     try {
-      localStorage.setItem(NAME_KEY, name.trim());
+      if (name.trim()) { localStorage.setItem(NAME_KEY, name.trim()); setSavedName(name.trim()); }
       const { id } = await send({ data: { name: name.trim() || "Believer", token: getToken(), to: peer?.id ?? null, ...payload } });
       saveMine([...mine, id]);
       await refresh();
@@ -452,12 +462,31 @@ function ChatPage() {
         <div className="fixed bottom-[92px] left-1/2 z-40 w-full max-w-[440px] -translate-x-1/2 px-4">
           <div className="rounded-2xl border border-glass-border bg-popover/95 backdrop-blur-xl p-2.5 shadow-2xl space-y-2">
             {error && <p className="text-xs text-destructive px-1">{error}</p>}
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value.slice(0, 60))}
-              placeholder="Your name"
-              className="w-full text-xs bg-muted rounded-lg px-3 py-1.5 focus:outline-none"
-            />
+            {savedName ? (
+              <p className="flex items-center justify-between px-1 text-[11px] text-muted-foreground">
+                <span>Posting as <b className="text-foreground">{savedName}</b></span>
+                <button
+                  onClick={() => {
+                    if (window.confirm("Change the name people see on your messages?")) setSavedName("");
+                  }}
+                  className="underline opacity-60"
+                >
+                  change
+                </button>
+              </p>
+            ) : (
+              <div className="flex gap-2">
+                <input
+                  value={name}
+                  onChange={(e) => setName(e.target.value.slice(0, 60))}
+                  onKeyDown={(e) => { if (e.key === "Enter") saveName(); }}
+                  onBlur={saveName}
+                  placeholder="Your name (saved once)"
+                  className="flex-1 text-xs bg-muted rounded-lg px-3 py-1.5 focus:outline-none"
+                />
+                <button onClick={saveName} className="rounded-lg bg-primary px-3 text-[11px] font-bold text-primary-foreground">Save</button>
+              </div>
+            )}
             {recording ? (
               <div className="flex items-center gap-2">
                 <button onClick={() => stopRecording(true)} aria-label="Cancel voice note" className="size-11 grid place-items-center rounded-xl bg-muted text-muted-foreground">

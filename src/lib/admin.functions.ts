@@ -26,17 +26,24 @@ export const adminStatus = createServerFn({ method: "GET" }).handler(async () =>
 });
 
 export const adminFetch = createServerFn({ method: "POST" })
-  .validator((data: { table: string }) => ({ table: String(data?.table ?? "") }))
+  .validator((data: { table: string; scope?: "public" | "private" }) => ({
+    table: String(data?.table ?? ""),
+    scope: data?.scope === "private" ? ("private" as const) : data?.scope === "public" ? ("public" as const) : undefined,
+  }))
   .handler(async ({ data }) => {
     const { requireAdmin, isAdminTable, orderColumn } = await import("./admin.server");
     await requireAdmin();
     if (!isAdminTable(data.table)) throw new Error("Unknown table");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: rows, error } = await supabaseAdmin
+    let q = supabaseAdmin
       .from(data.table)
       .select("*")
       .order(orderColumn(data.table), { ascending: false })
-      .limit(200);
+      .limit(300);
+    if (data.table === "chat_messages" && data.scope) {
+      q = data.scope === "private" ? q.not("recipient_id", "is", null) : q.is("recipient_id", null);
+    }
+    const { data: rows, error } = await q;
     if (error) throw new Error(error.message);
     return { rows: (rows ?? []) as AdminRow[] };
   });
