@@ -22,6 +22,13 @@
       "when": 1792053371471,
       "tag": "0002_allow_voice_only_chat_messages",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1792141154734,
+      "tag": "0003_teaching_engagement",
+      "breakpoints": true
     }
   ]
 }

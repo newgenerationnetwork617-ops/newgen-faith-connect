@@ -341,6 +341,67 @@ export type Database = {
         }
         Relationships: []
       }
+      teaching_comments: {
+        Row: {
+          author_hash: string
+          body: string
+          created_at: string
+          id: string
+          name: string
+          teaching_id: string
+        }
+        Insert: {
+          author_hash: string
+          body: string
+          created_at?: string
+          id?: string
+          name: string
+          teaching_id: string
+        }
+        Update: {
+          author_hash?: string
+          body?: string
+          created_at?: string
+          id?: string
+          name?: string
+          teaching_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teaching_comments_teaching_id_fkey"
+            columns: ["teaching_id"]
+            isOneToOne: false
+            referencedRelation: "teachings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      teaching_likes: {
+        Row: {
+          author_hash: string
+          created_at: string
+          teaching_id: string
+        }
+        Insert: {
+          author_hash: string
+          created_at?: string
+          teaching_id: string
+        }
+        Update: {
+          author_hash?: string
+          created_at?: string
+          teaching_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teaching_likes_teaching_id_fkey"
+            columns: ["teaching_id"]
+            isOneToOne: false
+            referencedRelation: "teachings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       teachings: {
         Row: {
           created_at: string
@@ -424,7 +485,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      teaching_like_count: { Args: { _teaching_id: string }; Returns: number }
     }
     Enums: {
       [_ in never]: never
