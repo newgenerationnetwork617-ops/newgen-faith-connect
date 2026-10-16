@@ -63,6 +63,7 @@ export function sanitizeRow(table: AdminTable, row: Record<string, unknown>) {
   if (typeof out.youtube_id === "string" && out.youtube_id) {
     out.youtube_id = youtubeId(out.youtube_id) ?? out.youtube_id;
   }
+  if (typeof out.kind === "string") out.kind = out.kind.trim().toLowerCase() || "video";
   return out;
 }
 
