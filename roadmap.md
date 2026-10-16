@@ -6,4 +6,7 @@
 - [x] Refine logo-aligned colors and phone layout
 - [x] Audit route metadata and verify key phone flows
 - [x] Offline access for recent Bible chapters and devotionals
-- [ ] User-controlled push notifications (devotionals, prayer reminders, events, teachings)
+- [ ] User-controlled push notifications (blocked: Firebase connection was declined)
+- [ ] Remove all private-chat access from admin
+- [ ] Add persistent teaching likes, comments and sharing
+- [ ] Display splash before app content and review phone display
