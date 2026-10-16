@@ -137,8 +137,8 @@ function HomePage() {
           <section className="space-y-4">
             <SectionHeader title="Latest Teachings" href="/teachings" />
             <div className="no-scrollbar -mx-6 flex gap-5 overflow-x-auto px-6 pb-2">
-              {teachings.slice(0, 8).map((t) => (
-                <Link key={t.id} to="/teachings" className="group w-56 shrink-0 space-y-3">
+              {teachings.slice(0, 20).map((t) => (
+                <Link key={t.id} to={t.kind === "video" ? "/watch" : "/teachings"} className="group w-56 shrink-0 space-y-3">
                   <div className="relative h-32 overflow-hidden rounded-3xl bg-night-gradient shadow-lg">
                     {(t.thumbnail_url || youtubeThumb(t.youtube_id)) && (
                       <img src={t.thumbnail_url || youtubeThumb(t.youtube_id)!} alt={t.title} loading="lazy" className="absolute inset-0 size-full object-cover" />

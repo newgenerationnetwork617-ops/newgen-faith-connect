@@ -27,7 +27,7 @@ function LivePage() {
     <MobileShell title="Live">
       <div className="px-5 py-6 space-y-6">
         <section className="rounded-2xl bg-navy text-navy-foreground overflow-hidden shadow-elegant">
-          {youtubeId(live?.youtube_id) ? (
+          {youtubeEmbed(live?.youtube_id) ? (
             <div className="aspect-video">
               <iframe
                 className="size-full"
