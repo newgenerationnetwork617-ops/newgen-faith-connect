@@ -41,8 +41,9 @@ export const adminFetch = createServerFn({ method: "POST" })
       .order(orderColumn(data.table), { ascending: false })
       .limit(300);
     if (data.table === "chat_messages" && data.scope) {
-      q = data.scope === "private" ? q.not("recipient_id", "is", null) : q.is("recipient_id", null);
+      q = q.is("recipient_id", null);
     }
+    if (data.table === "chat_messages" && !data.scope) q = q.is("recipient_id", null);
     const { data: rows, error } = await q;
     if (error) throw new Error(error.message);
     return { rows: (rows ?? []) as AdminRow[] };
@@ -59,6 +60,14 @@ export const adminUpsert = createServerFn({ method: "POST" })
     if (!isAdminTable(data.table)) throw new Error("Unknown table");
     const payload = sanitizeRow(data.table, data.row);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    if (data.table === "chat_messages") {
+      const { canAdminManageChat } = await import("./admin-chat");
+      const { data: existing, error: lookupError } = await supabaseAdmin.from("chat_messages").select("recipient_id").eq("id", String(payload.id ?? "")).maybeSingle();
+      if (lookupError || !canAdminManageChat(existing)) throw new Error("Only community messages can be managed here");
+      const { data: updated, error: updateError } = await supabaseAdmin.from("chat_messages").update(payload).eq("id", String(payload.id)).is("recipient_id", null).select().single();
+      if (updateError) throw new Error(updateError.message);
+      return { row: updated as AdminRow };
+    }
     const { data: row, error } = await supabaseAdmin
       .from(data.table)
       .upsert(payload, { onConflict: "id" })
@@ -78,7 +87,9 @@ export const adminDelete = createServerFn({ method: "POST" })
     await requireAdmin();
     if (!isAdminTable(data.table)) throw new Error("Unknown table");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin.from(data.table).delete().eq("id", data.id);
+    let query = supabaseAdmin.from(data.table).delete().eq("id", data.id);
+    if (data.table === "chat_messages") query = query.is("recipient_id", null);
+    const { error } = await query;
     if (error) throw new Error(error.message);
     return { ok: true as const };
   });
