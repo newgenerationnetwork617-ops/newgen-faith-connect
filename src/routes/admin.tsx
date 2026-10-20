@@ -40,7 +40,7 @@ type TabDef = {
   subtitleKeys: string[];
   creatable: boolean;
   singleton?: boolean;
-  scope?: "public" | "private";
+  scope?: "public";
 };
 
 const TABS: TabDef[] = [
@@ -148,13 +148,6 @@ const TABS: TabDef[] = [
       { key: "name", label: "Name", type: "text" },
       { key: "body", label: "Message", type: "textarea" },
       { key: "hidden", label: "Hidden from chat", type: "bool" },
-    ],
-  },
-  {
-    key: "private_chat", table: "chat_messages", scope: "private", label: "Private chats", icon: Lock, creatable: false,
-    titleKey: "name", subtitleKeys: ["body"],
-    fields: [
-      { key: "hidden", label: "Hide this private message (only for abuse reports)", type: "bool" },
     ],
   },
   {
@@ -455,6 +448,9 @@ function RowEditor({
               />
             </FieldWrap>
           );
+        }
+        if (tab.table === "teachings" && field.key === "kind") {
+          return <FieldWrap key={field.key} label="Teaching type"><select aria-label="Teaching type" value={typeof value === "string" ? value.toLowerCase() : "video"} onChange={(e) => set(field.key, e.target.value)} className="w-full rounded-lg bg-muted p-3 text-sm"><option value="video">Video</option><option value="audio">Audio</option><option value="study">Study</option></select></FieldWrap>;
         }
         const isDate = field.type === "datetime";
         const inputValue = isDate

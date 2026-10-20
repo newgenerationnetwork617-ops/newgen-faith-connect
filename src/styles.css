@@ -40,6 +40,7 @@
   --color-ring: var(--ring);
   --color-navy: var(--navy);
   --color-navy-foreground: var(--navy-foreground);
+  --color-logo-surface: var(--logo-surface);
 
   --font-display: "Sora", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
@@ -56,6 +57,7 @@
 }
 
 :root {
+  --logo-surface: oklch(1 0 0);
   --radius: 1.25rem;
   /* Sky Glory light: white, navy ink, sky cyan, gold */
   --background: oklch(0.985 0.008 240);
@@ -137,3 +139,7 @@
 
 @keyframes ngn-rise { from { opacity: 0; transform: translateY(16px) scale(.96); } to { opacity: 1; transform: none; } }
 @keyframes ngn-load { from { width: 0; } to { width: 100%; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}

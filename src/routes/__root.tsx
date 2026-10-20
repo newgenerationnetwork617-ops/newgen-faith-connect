@@ -83,8 +83,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "New Generation Network — Home" },
       { name: "twitter:description", content: "Your daily home for gospel films, teachings, Bible, devotionals, and prayer." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/b5081e6f-1ada-4fd8-803e-f2269ab69e89" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/b5081e6f-1ada-4fd8-803e-f2269ab69e89" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -121,8 +119,7 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <QueryClientProvider client={queryClient}>
-      <SplashScreen />
-      <Outlet />
+      <SplashScreen><Outlet /></SplashScreen>
     </QueryClientProvider>
   );
 }
