@@ -18,16 +18,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
 
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "21"
-
-      - name: Install project dependencies
-        run: npm install
 
       - name: Install Android wrapper dependencies
         run: npm install --no-save @capacitor/core @capacitor/cli @capacitor/android
