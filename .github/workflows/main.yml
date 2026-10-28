@@ -2,6 +2,9 @@ name: Build NGN Android APK
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - chatgpt-android-apk
 
 jobs:
   build:
@@ -15,27 +18,31 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Install Capacitor
-        run: npm install @capacitor/core @capacitor/cli @capacitor/android
-
-      - name: Create Android wrapper
-        run: |
-          npx cap init "New Generation Network" "com.newgenerationnetwork.app" --web-dir=dist
-          npm run build
-          npx cap add android
-          npx cap sync android
+          cache: npm
 
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "17"
+          java-version: "21"
 
-      - name: Build APK
+      - name: Install project dependencies
+        run: npm install
+
+      - name: Install Android wrapper dependencies
+        run: npm install --no-save @capacitor/core @capacitor/cli @capacitor/android
+
+      - name: Prepare Capacitor web directory
+        run: |
+          mkdir -p www
+          printf '<!doctype html><html><body></body></html>' > www/index.html
+
+      - name: Create Android project
+        run: |
+          npx cap add android
+          npx cap sync android
+
+      - name: Build debug APK
         working-directory: android
         run: |
           chmod +x gradlew
@@ -46,3 +53,4 @@ jobs:
         with:
           name: NGN-Android-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
