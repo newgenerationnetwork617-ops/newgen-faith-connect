@@ -17,29 +17,38 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Setup Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "21"
 
-      - name: Install Android wrapper dependencies
-        run: npm install --no-save @capacitor/core @capacitor/cli @capacitor/android
-
-      - name: Prepare Capacitor web directory
+      - name: Prepare clean Capacitor workspace
         run: |
-          mkdir -p www
-          printf '<!doctype html><html><body></body></html>' > www/index.html
-
-      - name: Create Android project
-        run: |
+          mkdir -p .apkbuild/www
+          printf '<!doctype html><html><body></body></html>' > .apkbuild/www/index.html
+          cd .apkbuild
+          npm init -y
+          npm install @capacitor/core@latest @capacitor/cli@latest @capacitor/android@latest
+          cat > capacitor.config.json <<'EOF'
+          {
+            "appId": "com.newgenerationnetwork.app",
+            "appName": "New Generation Network",
+            "webDir": "www",
+            "server": {
+              "url": "https://ngn-faith-connect.lovable.app",
+              "cleartext": false,
+              "androidScheme": "https"
+            }
+          }
+          EOF
           npx cap add android
           npx cap sync android
 
       - name: Build debug APK
-        working-directory: android
+        working-directory: .apkbuild/android
         run: |
           chmod +x gradlew
           ./gradlew assembleDebug
@@ -48,5 +57,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: NGN-Android-APK
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          path: .apkbuild/android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
