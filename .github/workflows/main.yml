@@ -31,10 +31,10 @@ jobs:
           printf '<!doctype html><html><body></body></html>' > apkbuild/www/index.html
           cd apkbuild
           npm init -y
-          npm install @capacitor/core@latest @capacitor/cli@latest @capacitor/android@latest
+          npm install @capacitor/core@latest @capacitor/cli@latest @capacitor/android@latest @capacitor/assets@latest
           cat > capacitor.config.json <<'EOF'
           {
-            "appId": "com.newgenerationnetwork.app",
+            "appId": "com.ngnofficial.faithconnect",
             "appName": "New Generation Network",
             "webDir": "www",
             "server": {
@@ -46,6 +46,9 @@ jobs:
           EOF
           npx cap add android
           npx cap sync android
+          mkdir -p resources
+          cp ../public/pwa-512.png resources/icon.png
+          npx capacitor-assets generate --android
 
       - name: Build debug APK
         working-directory: apkbuild/android
