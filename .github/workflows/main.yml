@@ -27,9 +27,9 @@ jobs:
 
       - name: Prepare clean Capacitor workspace
         run: |
-          mkdir -p .apkbuild/www
-          printf '<!doctype html><html><body></body></html>' > .apkbuild/www/index.html
-          cd .apkbuild
+          mkdir -p apkbuild/www
+          printf '<!doctype html><html><body></body></html>' > apkbuild/www/index.html
+          cd apkbuild
           npm init -y
           npm install @capacitor/core@latest @capacitor/cli@latest @capacitor/android@latest
           cat > capacitor.config.json <<'EOF'
@@ -48,7 +48,7 @@ jobs:
           npx cap sync android
 
       - name: Build debug APK
-        working-directory: .apkbuild/android
+        working-directory: apkbuild/android
         run: |
           chmod +x gradlew
           ./gradlew assembleDebug
@@ -57,5 +57,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: NGN-Android-APK
-          path: .apkbuild/android/app/build/outputs/apk/debug/app-debug.apk
+          path: apkbuild/android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
