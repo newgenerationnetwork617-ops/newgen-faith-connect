@@ -2,6 +2,9 @@ name: Build NGN Android APK
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - chatgpt-android-apk
 
 jobs:
   build:
@@ -14,29 +17,41 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Install Capacitor
-        run: npm install @capacitor/core @capacitor/cli @capacitor/android
-
-      - name: Create Android wrapper
-        run: |
-          npx cap init "New Generation Network" "com.newgenerationnetwork.app" --web-dir=dist
-          npm run build
-          npx cap add android
-          npx cap sync android
+          node-version: 22
 
       - name: Setup Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: "17"
+          java-version: "21"
 
-      - name: Build APK
-        working-directory: android
+      - name: Prepare clean Capacitor workspace
+        run: |
+          mkdir -p apkbuild/www
+          printf '<!doctype html><html><body></body></html>' > apkbuild/www/index.html
+          cd apkbuild
+          npm init -y
+          npm install @capacitor/core@latest @capacitor/cli@latest @capacitor/android@latest @capacitor/assets@latest
+          cat > capacitor.config.json <<'EOF'
+          {
+            "appId": "com.ngnofficial.faithconnect",
+            "appName": "New Generation Network",
+            "webDir": "www",
+            "server": {
+              "url": "https://ngn-faith-connect.lovable.app",
+              "cleartext": false,
+              "androidScheme": "https"
+            }
+          }
+          EOF
+          npx cap add android
+          npx cap sync android
+          mkdir -p resources
+          cp ../public/pwa-512.png resources/icon.png
+          npx capacitor-assets generate --android
+
+      - name: Build debug APK
+        working-directory: apkbuild/android
         run: |
           chmod +x gradlew
           ./gradlew assembleDebug
@@ -45,4 +60,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: NGN-Android-APK
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          path: apkbuild/android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
