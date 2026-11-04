@@ -44,6 +44,75 @@ export type Database = {
         }
         Relationships: []
       }
+      app_builds: {
+        Row: {
+          created_at: string
+          file_path: string
+          file_size: number | null
+          id: string
+          notes: string | null
+          published: boolean
+          version_name: string
+        }
+        Insert: {
+          created_at?: string
+          file_path: string
+          file_size?: number | null
+          id?: string
+          notes?: string | null
+          published?: boolean
+          version_name: string
+        }
+        Update: {
+          created_at?: string
+          file_path?: string
+          file_size?: number | null
+          id?: string
+          notes?: string | null
+          published?: boolean
+          version_name?: string
+        }
+        Relationships: []
+      }
+      books: {
+        Row: {
+          author: string | null
+          cover_url: string | null
+          created_at: string
+          description: string | null
+          file_path: string
+          id: string
+          pages: number | null
+          publish_at: string
+          published: boolean
+          title: string
+        }
+        Insert: {
+          author?: string | null
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          file_path: string
+          id?: string
+          pages?: number | null
+          publish_at?: string
+          published?: boolean
+          title: string
+        }
+        Update: {
+          author?: string | null
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          file_path?: string
+          id?: string
+          pages?: number | null
+          publish_at?: string
+          published?: boolean
+          title?: string
+        }
+        Relationships: []
+      }
       chat_members: {
         Row: {
           author_hash: string
