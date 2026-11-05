@@ -5,14 +5,12 @@ import { youtubeId } from "./youtube";
 export type AdminTable =
   | "devotionals"
   | "teachings"
+  | "books"
+  | "app_builds"
   | "events"
   | "announcements"
-  | "live_streams"
   | "prayer_requests"
-  | "testimonies"
-  | "community_posts"
-  | "contact_info"
-  | "chat_messages";
+  | "contact_info";
 
 const COLUMNS: Record<AdminTable, string[]> = {
   devotionals: [
@@ -23,27 +21,29 @@ const COLUMNS: Record<AdminTable, string[]> = {
     "id", "title", "speaker", "topic", "series", "kind", "youtube_id",
     "media_url", "thumbnail_url", "duration", "description", "publish_at", "published",
   ],
+  books: ["id", "title", "author", "description", "file_path", "cover_url", "pages", "publish_at", "published"],
+  app_builds: ["id", "version_name", "notes", "file_path", "file_size", "published", "created_at"],
   events: ["id", "title", "starts_at", "location", "event_type", "description", "link", "published"],
   announcements: ["id", "title", "body", "publish_at", "published"],
-  live_streams: ["id", "title", "youtube_id", "starts_at", "is_live", "description"],
   prayer_requests: ["id", "name", "request", "kind", "status", "approved"],
-  testimonies: ["id", "name", "message", "approved"],
-  community_posts: ["id", "name", "body", "approved"],
-  chat_messages: ["id", "name", "body", "hidden"],
   contact_info: ["id", "whatsapp_numbers", "email", "youtube", "facebook", "instagram", "address"],
 };
 
 const ORDER: Record<AdminTable, string> = {
   devotionals: "publish_at",
   teachings: "publish_at",
+  books: "publish_at",
+  app_builds: "created_at",
   events: "starts_at",
   announcements: "publish_at",
-  live_streams: "starts_at",
   prayer_requests: "created_at",
-  testimonies: "created_at",
-  community_posts: "created_at",
   contact_info: "id",
-  chat_messages: "created_at",
+};
+
+/** Which storage bucket backs each table's file_path column, if any. */
+export const FILE_BUCKETS: Partial<Record<AdminTable, string>> = {
+  books: "books",
+  app_builds: "app-files",
 };
 
 export function isAdminTable(value: string): value is AdminTable {
@@ -64,6 +64,7 @@ export function sanitizeRow(table: AdminTable, row: Record<string, unknown>) {
     out.youtube_id = youtubeId(out.youtube_id) ?? out.youtube_id;
   }
   if (typeof out.kind === "string") out.kind = out.kind.trim().toLowerCase() || "video";
+  if (typeof out.file_path === "string") out.file_path = out.file_path.trim();
   return out;
 }
 

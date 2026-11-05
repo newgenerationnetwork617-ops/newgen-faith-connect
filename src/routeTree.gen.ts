@@ -19,6 +19,7 @@ import { Route as EventsRouteImport } from './routes/events'
 import { Route as PrayerRouteImport } from './routes/prayer'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as TeachingsRouteImport } from './routes/teachings'
+import { Route as ApiPublicAdminUploadRouteImport } from './routes/api/public/admin-upload'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -70,6 +71,11 @@ const TeachingsRoute = TeachingsRouteImport.update({
   path: '/teachings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicAdminUploadRoute = ApiPublicAdminUploadRouteImport.update({
+  id: '/api/public/admin-upload',
+  path: '/api/public/admin-upload',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -82,6 +88,7 @@ export interface FileRoutesByFullPath {
   '/prayer': typeof PrayerRoute
   '/reset-password': typeof ResetPasswordRoute
   '/teachings': typeof TeachingsRoute
+  '/api/public/admin-upload': typeof ApiPublicAdminUploadRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByTo {
   '/prayer': typeof PrayerRoute
   '/reset-password': typeof ResetPasswordRoute
   '/teachings': typeof TeachingsRoute
+  '/api/public/admin-upload': typeof ApiPublicAdminUploadRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -107,6 +115,7 @@ export interface FileRoutesById {
   '/prayer': typeof PrayerRoute
   '/reset-password': typeof ResetPasswordRoute
   '/teachings': typeof TeachingsRoute
+  '/api/public/admin-upload': typeof ApiPublicAdminUploadRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -121,6 +130,7 @@ export interface FileRouteTypes {
     | '/prayer'
     | '/reset-password'
     | '/teachings'
+    | '/api/public/admin-upload'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -133,6 +143,7 @@ export interface FileRouteTypes {
     | '/prayer'
     | '/reset-password'
     | '/teachings'
+    | '/api/public/admin-upload'
   id:
     | '__root__'
     | '/'
@@ -145,6 +156,7 @@ export interface FileRouteTypes {
     | '/prayer'
     | '/reset-password'
     | '/teachings'
+    | '/api/public/admin-upload'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -158,6 +170,7 @@ export interface RootRouteChildren {
   PrayerRoute: typeof PrayerRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   TeachingsRoute: typeof TeachingsRoute
+  ApiPublicAdminUploadRoute: typeof ApiPublicAdminUploadRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -232,6 +245,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TeachingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/admin-upload': {
+      id: '/api/public/admin-upload'
+      path: '/api/public/admin-upload'
+      fullPath: '/api/public/admin-upload'
+      preLoaderRoute: typeof ApiPublicAdminUploadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -246,6 +266,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrayerRoute: PrayerRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   TeachingsRoute: TeachingsRoute,
+  ApiPublicAdminUploadRoute: ApiPublicAdminUploadRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
