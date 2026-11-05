@@ -26,25 +26,17 @@ export const adminStatus = createServerFn({ method: "GET" }).handler(async () =>
 });
 
 export const adminFetch = createServerFn({ method: "POST" })
-  .validator((data: { table: string; scope?: "public" | "private" }) => ({
-    table: String(data?.table ?? ""),
-    scope: data?.scope === "private" ? ("private" as const) : data?.scope === "public" ? ("public" as const) : undefined,
-  }))
+  .validator((data: { table: string }) => ({ table: String(data?.table ?? "") }))
   .handler(async ({ data }) => {
     const { requireAdmin, isAdminTable, orderColumn } = await import("./admin.server");
     await requireAdmin();
     if (!isAdminTable(data.table)) throw new Error("Unknown table");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    let q = supabaseAdmin
+    const { data: rows, error } = await supabaseAdmin
       .from(data.table)
       .select("*")
       .order(orderColumn(data.table), { ascending: false })
       .limit(300);
-    if (data.table === "chat_messages" && data.scope) {
-      q = q.is("recipient_id", null);
-    }
-    if (data.table === "chat_messages" && !data.scope) q = q.is("recipient_id", null);
-    const { data: rows, error } = await q;
     if (error) throw new Error(error.message);
     return { rows: (rows ?? []) as AdminRow[] };
   });
@@ -60,14 +52,6 @@ export const adminUpsert = createServerFn({ method: "POST" })
     if (!isAdminTable(data.table)) throw new Error("Unknown table");
     const payload = sanitizeRow(data.table, data.row);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    if (data.table === "chat_messages") {
-      const { canAdminManageChat } = await import("./admin-chat");
-      const { data: existing, error: lookupError } = await supabaseAdmin.from("chat_messages").select("recipient_id").eq("id", String(payload.id ?? "")).maybeSingle();
-      if (lookupError || !canAdminManageChat(existing)) throw new Error("Only community messages can be managed here");
-      const { data: updated, error: updateError } = await supabaseAdmin.from("chat_messages").update(payload).eq("id", String(payload.id)).is("recipient_id", null).select().single();
-      if (updateError) throw new Error(updateError.message);
-      return { row: updated as AdminRow };
-    }
     const { data: row, error } = await supabaseAdmin
       .from(data.table)
       .upsert(payload, { onConflict: "id" })
@@ -83,13 +67,27 @@ export const adminDelete = createServerFn({ method: "POST" })
     id: String(data?.id ?? ""),
   }))
   .handler(async ({ data }) => {
-    const { requireAdmin, isAdminTable } = await import("./admin.server");
+    const { requireAdmin, isAdminTable, FILE_BUCKETS } = await import("./admin.server");
     await requireAdmin();
     if (!isAdminTable(data.table)) throw new Error("Unknown table");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    let query = supabaseAdmin.from(data.table).delete().eq("id", data.id);
-    if (data.table === "chat_messages") query = query.is("recipient_id", null);
-    const { error } = await query;
+
+    // Remove the stored file as well, so deleted books/builds don't keep occupying space.
+    const bucket = FILE_BUCKETS[data.table];
+    if (bucket) {
+      const { data: existing } = await supabaseAdmin
+        .from(data.table)
+        .select("file_path")
+        .eq("id", data.id)
+        .maybeSingle();
+      const path = existing?.file_path;
+      if (path) {
+        const { error: removeError } = await supabaseAdmin.storage.from(bucket).remove([path]);
+        if (removeError) console.error("Could not remove stored file:", removeError.message);
+      }
+    }
+
+    const { error } = await supabaseAdmin.from(data.table).delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true as const };
   });

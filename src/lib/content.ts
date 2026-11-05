@@ -6,10 +6,9 @@ export type Devotional = Tables<"devotionals">;
 export type Teaching = Tables<"teachings">;
 export type MinistryEvent = Tables<"events">;
 export type Announcement = Tables<"announcements">;
-export type LiveStream = Tables<"live_streams">;
+export type Book = Tables<"books">;
+export type AppBuild = Tables<"app_builds">;
 export type PrayerRequest = Tables<"prayer_requests">;
-export type Testimony = Tables<"testimonies">;
-export type CommunityPost = Tables<"community_posts">;
 export type ContactInfo = Tables<"contact_info">;
 
 export const FALLBACK_CONTACT = {
@@ -86,6 +85,37 @@ export function useTeachings(kind?: string) {
   });
 }
 
+export function useBooks() {
+  return useQuery({
+    queryKey: ["books"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("books")
+        .select("*")
+        .order("publish_at", { ascending: false })
+        .limit(100);
+      if (error) throw error;
+      return data as Book[];
+    },
+  });
+}
+
+export function useLatestAppBuild() {
+  return useQuery({
+    queryKey: ["app_builds", "latest"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("app_builds")
+        .select("*")
+        .eq("published", true)
+        .order("created_at", { ascending: false })
+        .limit(1);
+      if (error) throw error;
+      return (data as AppBuild[])[0] ?? null;
+    },
+  });
+}
+
 export function useEvents() {
   return useQuery({
     queryKey: ["events"],
@@ -116,21 +146,6 @@ export function useAnnouncements() {
   });
 }
 
-export function useLiveStream() {
-  return useQuery({
-    queryKey: ["live_streams"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("live_streams")
-        .select("*")
-        .order("starts_at", { ascending: false })
-        .limit(5);
-      if (error) throw error;
-      return data as LiveStream[];
-    },
-  });
-}
-
 export function usePrayerWall(kind: "prayer" | "praise") {
   return useQuery({
     queryKey: ["prayer_requests", kind],
@@ -143,36 +158,6 @@ export function usePrayerWall(kind: "prayer" | "praise") {
         .limit(50);
       if (error) throw error;
       return data as PrayerRequest[];
-    },
-  });
-}
-
-export function useTestimonies() {
-  return useQuery({
-    queryKey: ["testimonies"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("testimonies")
-        .select("*")
-        .order("created_at", { ascending: false })
-        .limit(50);
-      if (error) throw error;
-      return data as Testimony[];
-    },
-  });
-}
-
-export function useCommunityPosts() {
-  return useQuery({
-    queryKey: ["community_posts"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("community_posts")
-        .select("*")
-        .order("created_at", { ascending: false })
-        .limit(50);
-      if (error) throw error;
-      return data as CommunityPost[];
     },
   });
 }
@@ -198,20 +183,28 @@ export async function submitPrayer(input: { name: string; request: string; kind:
   if (error) throw error;
 }
 
-export async function submitTestimony(input: { name: string; message: string }) {
-  const { error } = await supabase.from("testimonies").insert({
-    name: input.name.slice(0, 80) || "Anonymous",
-    message: input.message.slice(0, 4000),
-  });
+/** Timed private-link to a stored devotion book. Pass download to force a file download. */
+export async function bookUrl(path: string, download?: string) {
+  const { data, error } = await supabase.storage
+    .from("books")
+    .createSignedUrl(path, 60 * 60, download ? { download } : undefined);
   if (error) throw error;
+  return data.signedUrl;
 }
 
-export async function submitCommunityPost(input: { name: string; body: string }) {
-  const { error } = await supabase.from("community_posts").insert({
-    name: input.name.slice(0, 80) || "Believer",
-    body: input.body.slice(0, 2000),
+/** Timed private-link to the Android app package. */
+export async function appFileUrl(path: string) {
+  const { data, error } = await supabase.storage.from("app-files").createSignedUrl(path, 60 * 60, {
+    download: "ngn-app.apk",
   });
   if (error) throw error;
+  return data.signedUrl;
+}
+
+export function formatBytes(bytes: number | null) {
+  if (!bytes || bytes <= 0) return "";
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
 export function formatDate(value: string) {

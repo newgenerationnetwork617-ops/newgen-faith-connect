@@ -13,19 +13,13 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AuthRouteImport } from './routes/auth'
-import { Route as BibleRouteImport } from './routes/bible'
-import { Route as ChatRouteImport } from './routes/chat'
-import { Route as CommunityRouteImport } from './routes/community'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DevotionalRouteImport } from './routes/devotional'
 import { Route as EventsRouteImport } from './routes/events'
-import { Route as LiveRouteImport } from './routes/live'
-import { Route as MoreRouteImport } from './routes/more'
 import { Route as PrayerRouteImport } from './routes/prayer'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as SearchRouteImport } from './routes/search'
 import { Route as TeachingsRouteImport } from './routes/teachings'
-import { Route as WatchRouteImport } from './routes/watch'
+import { Route as ApiPublicAdminUploadRouteImport } from './routes/api/public/admin-upload'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -47,21 +41,6 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BibleRoute = BibleRouteImport.update({
-  id: '/bible',
-  path: '/bible',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ChatRoute = ChatRouteImport.update({
-  id: '/chat',
-  path: '/chat',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CommunityRoute = CommunityRouteImport.update({
-  id: '/community',
-  path: '/community',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
@@ -77,16 +56,6 @@ const EventsRoute = EventsRouteImport.update({
   path: '/events',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LiveRoute = LiveRouteImport.update({
-  id: '/live',
-  path: '/live',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MoreRoute = MoreRouteImport.update({
-  id: '/more',
-  path: '/more',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const PrayerRoute = PrayerRouteImport.update({
   id: '/prayer',
   path: '/prayer',
@@ -97,19 +66,14 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
   path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SearchRoute = SearchRouteImport.update({
-  id: '/search',
-  path: '/search',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const TeachingsRoute = TeachingsRouteImport.update({
   id: '/teachings',
   path: '/teachings',
   getParentRoute: () => rootRouteImport,
 } as any)
-const WatchRoute = WatchRouteImport.update({
-  id: '/watch',
-  path: '/watch',
+const ApiPublicAdminUploadRoute = ApiPublicAdminUploadRouteImport.update({
+  id: '/api/public/admin-upload',
+  path: '/api/public/admin-upload',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -118,38 +82,26 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
-  '/bible': typeof BibleRoute
-  '/chat': typeof ChatRoute
-  '/community': typeof CommunityRoute
   '/contact': typeof ContactRoute
   '/devotional': typeof DevotionalRoute
   '/events': typeof EventsRoute
-  '/live': typeof LiveRoute
-  '/more': typeof MoreRoute
   '/prayer': typeof PrayerRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/search': typeof SearchRoute
   '/teachings': typeof TeachingsRoute
-  '/watch': typeof WatchRoute
+  '/api/public/admin-upload': typeof ApiPublicAdminUploadRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
-  '/bible': typeof BibleRoute
-  '/chat': typeof ChatRoute
-  '/community': typeof CommunityRoute
   '/contact': typeof ContactRoute
   '/devotional': typeof DevotionalRoute
   '/events': typeof EventsRoute
-  '/live': typeof LiveRoute
-  '/more': typeof MoreRoute
   '/prayer': typeof PrayerRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/search': typeof SearchRoute
   '/teachings': typeof TeachingsRoute
-  '/watch': typeof WatchRoute
+  '/api/public/admin-upload': typeof ApiPublicAdminUploadRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -157,19 +109,13 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
-  '/bible': typeof BibleRoute
-  '/chat': typeof ChatRoute
-  '/community': typeof CommunityRoute
   '/contact': typeof ContactRoute
   '/devotional': typeof DevotionalRoute
   '/events': typeof EventsRoute
-  '/live': typeof LiveRoute
-  '/more': typeof MoreRoute
   '/prayer': typeof PrayerRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/search': typeof SearchRoute
   '/teachings': typeof TeachingsRoute
-  '/watch': typeof WatchRoute
+  '/api/public/admin-upload': typeof ApiPublicAdminUploadRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -178,57 +124,39 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/auth'
-    | '/bible'
-    | '/chat'
-    | '/community'
     | '/contact'
     | '/devotional'
     | '/events'
-    | '/live'
-    | '/more'
     | '/prayer'
     | '/reset-password'
-    | '/search'
     | '/teachings'
-    | '/watch'
+    | '/api/public/admin-upload'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
     | '/admin'
     | '/auth'
-    | '/bible'
-    | '/chat'
-    | '/community'
     | '/contact'
     | '/devotional'
     | '/events'
-    | '/live'
-    | '/more'
     | '/prayer'
     | '/reset-password'
-    | '/search'
     | '/teachings'
-    | '/watch'
+    | '/api/public/admin-upload'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/admin'
     | '/auth'
-    | '/bible'
-    | '/chat'
-    | '/community'
     | '/contact'
     | '/devotional'
     | '/events'
-    | '/live'
-    | '/more'
     | '/prayer'
     | '/reset-password'
-    | '/search'
     | '/teachings'
-    | '/watch'
+    | '/api/public/admin-upload'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -236,19 +164,13 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
-  BibleRoute: typeof BibleRoute
-  ChatRoute: typeof ChatRoute
-  CommunityRoute: typeof CommunityRoute
   ContactRoute: typeof ContactRoute
   DevotionalRoute: typeof DevotionalRoute
   EventsRoute: typeof EventsRoute
-  LiveRoute: typeof LiveRoute
-  MoreRoute: typeof MoreRoute
   PrayerRoute: typeof PrayerRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
-  SearchRoute: typeof SearchRoute
   TeachingsRoute: typeof TeachingsRoute
-  WatchRoute: typeof WatchRoute
+  ApiPublicAdminUploadRoute: typeof ApiPublicAdminUploadRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -281,27 +203,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/bible': {
-      id: '/bible'
-      path: '/bible'
-      fullPath: '/bible'
-      preLoaderRoute: typeof BibleRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/chat': {
-      id: '/chat'
-      path: '/chat'
-      fullPath: '/chat'
-      preLoaderRoute: typeof ChatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/community': {
-      id: '/community'
-      path: '/community'
-      fullPath: '/community'
-      preLoaderRoute: typeof CommunityRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/contact': {
       id: '/contact'
       path: '/contact'
@@ -323,20 +224,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EventsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/live': {
-      id: '/live'
-      path: '/live'
-      fullPath: '/live'
-      preLoaderRoute: typeof LiveRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/more': {
-      id: '/more'
-      path: '/more'
-      fullPath: '/more'
-      preLoaderRoute: typeof MoreRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/prayer': {
       id: '/prayer'
       path: '/prayer'
@@ -351,13 +238,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/search': {
-      id: '/search'
-      path: '/search'
-      fullPath: '/search'
-      preLoaderRoute: typeof SearchRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/teachings': {
       id: '/teachings'
       path: '/teachings'
@@ -365,11 +245,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TeachingsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/watch': {
-      id: '/watch'
-      path: '/watch'
-      fullPath: '/watch'
-      preLoaderRoute: typeof WatchRouteImport
+    '/api/public/admin-upload': {
+      id: '/api/public/admin-upload'
+      path: '/api/public/admin-upload'
+      fullPath: '/api/public/admin-upload'
+      preLoaderRoute: typeof ApiPublicAdminUploadRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -380,19 +260,13 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
-  BibleRoute: BibleRoute,
-  ChatRoute: ChatRoute,
-  CommunityRoute: CommunityRoute,
   ContactRoute: ContactRoute,
   DevotionalRoute: DevotionalRoute,
   EventsRoute: EventsRoute,
-  LiveRoute: LiveRoute,
-  MoreRoute: MoreRoute,
   PrayerRoute: PrayerRoute,
   ResetPasswordRoute: ResetPasswordRoute,
-  SearchRoute: SearchRoute,
   TeachingsRoute: TeachingsRoute,
-  WatchRoute: WatchRoute,
+  ApiPublicAdminUploadRoute: ApiPublicAdminUploadRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
