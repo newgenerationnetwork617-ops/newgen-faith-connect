@@ -4,8 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  Lock, LogOut, Sparkles, Calendar, HandHeart, MessageCircle, Megaphone,
-  Mic, Radio, Users, Phone, Plus, Trash2, ShieldCheck, Check, X,
+  Lock, LogOut, Sparkles, Calendar, HandHeart, Megaphone, BookOpen, Smartphone, Upload,
+  Mic, Phone, Plus, Trash2, ShieldCheck, Check, X,
 } from "lucide-react";
 import {
   adminLogin, adminLogout, adminStatus, adminFetch, adminUpsert, adminDelete,
@@ -27,7 +27,7 @@ export const Route = createFileRoute("/admin")({
   component: AdminPage,
 });
 
-type FieldType = "text" | "textarea" | "datetime" | "bool" | "list";
+type FieldType = "text" | "textarea" | "datetime" | "bool" | "list" | "file" | "number";
 type Field = { key: string; label: string; type: FieldType; placeholder?: string };
 
 type TabDef = {
@@ -40,7 +40,7 @@ type TabDef = {
   subtitleKeys: string[];
   creatable: boolean;
   singleton?: boolean;
-  scope?: "public";
+  upload?: "book" | "app";
 };
 
 const TABS: TabDef[] = [
@@ -79,6 +79,30 @@ const TABS: TabDef[] = [
     ],
   },
   {
+    key: "books", table: "books", label: "Books", icon: BookOpen, creatable: true, upload: "book",
+    titleKey: "title", subtitleKeys: ["author"],
+    fields: [
+      { key: "file_path", label: "PDF file", type: "file" },
+      { key: "title", label: "Title", type: "text" },
+      { key: "author", label: "Author", type: "text" },
+      { key: "description", label: "Description", type: "textarea" },
+      { key: "cover_url", label: "Cover image URL (optional)", type: "text" },
+      { key: "pages", label: "Number of pages (optional)", type: "number" },
+      { key: "publish_at", label: "Publish date", type: "datetime" },
+      { key: "published", label: "Published", type: "bool" },
+    ],
+  },
+  {
+    key: "app", table: "app_builds", label: "App file", icon: Smartphone, creatable: true, upload: "app",
+    titleKey: "version_name", subtitleKeys: ["notes"],
+    fields: [
+      { key: "file_path", label: "Android app file (.apk)", type: "file" },
+      { key: "version_name", label: "Version name", type: "text", placeholder: "Version 1.0" },
+      { key: "notes", label: "What's new", type: "textarea" },
+      { key: "published", label: "Show on the download page", type: "bool" },
+    ],
+  },
+  {
     key: "events", table: "events", label: "Meetings", icon: Calendar, creatable: true,
     titleKey: "title", subtitleKeys: ["location", "event_type"],
     fields: [
@@ -101,17 +125,7 @@ const TABS: TabDef[] = [
       { key: "published", label: "Published", type: "bool" },
     ],
   },
-  {
-    key: "live", table: "live_streams", label: "Live", icon: Radio, creatable: true,
-    titleKey: "title", subtitleKeys: ["youtube_id"],
-    fields: [
-      { key: "title", label: "Title", type: "text" },
-      { key: "youtube_id", label: "YouTube link (video or live)", type: "text" },
-      { key: "starts_at", label: "Starts at", type: "datetime" },
-      { key: "is_live", label: "Currently live", type: "bool" },
-      { key: "description", label: "Description", type: "textarea" },
-    ],
-  },
+
   {
     key: "prayers", table: "prayer_requests", label: "Prayers", icon: HandHeart, creatable: false,
     titleKey: "name", subtitleKeys: ["request"],
@@ -123,33 +137,9 @@ const TABS: TabDef[] = [
       { key: "approved", label: "Show on prayer wall", type: "bool" },
     ],
   },
-  {
-    key: "testimonies", table: "testimonies", label: "Testimonies", icon: MessageCircle, creatable: false,
-    titleKey: "name", subtitleKeys: ["message"],
-    fields: [
-      { key: "name", label: "Name", type: "text" },
-      { key: "message", label: "Testimony", type: "textarea" },
-      { key: "approved", label: "Approved", type: "bool" },
-    ],
-  },
-  {
-    key: "community", table: "community_posts", label: "Community", icon: Users, creatable: false,
-    titleKey: "name", subtitleKeys: ["body"],
-    fields: [
-      { key: "name", label: "Name", type: "text" },
-      { key: "body", label: "Post", type: "textarea" },
-      { key: "approved", label: "Approved", type: "bool" },
-    ],
-  },
-  {
-    key: "chat", table: "chat_messages", scope: "public", label: "Community chat", icon: MessageCircle, creatable: false,
-    titleKey: "name", subtitleKeys: ["body"],
-    fields: [
-      { key: "name", label: "Name", type: "text" },
-      { key: "body", label: "Message", type: "textarea" },
-      { key: "hidden", label: "Hidden from chat", type: "bool" },
-    ],
-  },
+
+
+
   {
     key: "contact", table: "contact_info", label: "Contact", icon: Phone, creatable: false, singleton: true,
     titleKey: "email", subtitleKeys: ["youtube"],
@@ -206,7 +196,7 @@ function AdminPage() {
               <ShieldCheck className="size-8 text-accent mb-3" />
               <h1 className="font-display text-2xl font-bold leading-tight">Ministry Admin</h1>
               <p className="text-sm text-white/60 mt-2">
-                Manage devotionals, teachings, meetings, prayer requests and testimonies.
+                Manage devotionals, teachings, books, the app file, meetings and prayer requests.
               </p>
             </div>
           </div>
@@ -258,7 +248,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin", tab.key],
-    queryFn: () => fetchRows({ data: { table: tab.table, scope: tab.scope } }),
+    queryFn: () => fetchRows({ data: { table: tab.table } }),
   });
 
   const saveMutation = useMutation({
@@ -313,7 +303,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
 
       {tab.creatable && !editing && (
         <button
-          onClick={() => setEditing({})}
+          onClick={() => setEditing(tab.upload ? { published: true } : {})}
           className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-hero-gradient text-white text-sm font-bold shadow-elegant"
         >
           <Plus className="size-4" /> New {tab.label.replace(/s$/, "")}
@@ -401,7 +391,7 @@ function RowEditor({
 }) {
   const [draft, setDraft] = useState<AdminRow>(row);
 
-  const set = (key: string, value: string | boolean | string[] | null) =>
+  const set = (key: string, value: string | number | boolean | string[] | null) =>
     setDraft((d) => ({ ...d, [key]: value }));
 
   return (
@@ -419,6 +409,25 @@ function RowEditor({
                 className="size-4"
               />
             </label>
+          );
+        }
+        if (field.type === "file") {
+          return (
+            <FileField key={field.key} label={field.label} kind={tab.upload ?? "book"} value={typeof value === "string" ? value : ""}
+              onUploaded={(path, size, fileName) => setDraft((d) => ({
+                ...d, [field.key]: path,
+                ...(tab.upload === "app" ? { file_size: size } : {}),
+                ...(tab.upload === "book" && !d["title"] ? { title: fileName.replace(/\.pdf$/i, "") } : {}),
+              }))} />
+          );
+        }
+        if (field.type === "number") {
+          return (
+            <FieldWrap key={field.key} label={field.label}>
+              <input type="number" min={1} value={typeof value === "number" ? value : ""}
+                onChange={(e) => set(field.key, e.target.value ? Number(e.target.value) : null)}
+                className="w-full text-sm bg-muted rounded-lg p-3 focus:outline-none" />
+            </FieldWrap>
           );
         }
         if (field.type === "list") {
@@ -477,7 +486,7 @@ function RowEditor({
 
       <div className="flex gap-2 pt-1">
         <button
-          disabled={saving}
+          disabled={saving || tab.fields.some((f) => f.type === "file" && !draft[f.key])}
           onClick={() => onSave(draft)}
           className="flex-1 py-3 rounded-xl bg-hero-gradient text-white text-sm font-bold shadow-elegant disabled:opacity-60"
         >
@@ -497,5 +506,47 @@ function FieldWrap({ label, children }: { label: string; children: React.ReactNo
       <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">{label}</span>
       {children}
     </div>
+  );
+}
+
+function FileField({ label, kind, value, onUploaded }: {
+  label: string; kind: "book" | "app"; value: string;
+  onUploaded: (path: string, size: number, fileName: string) => void;
+}) {
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [name, setName] = useState("");
+
+  const upload = async (file: File) => {
+    setError(""); setBusy(true);
+    try {
+      const form = new FormData();
+      form.append("kind", kind);
+      form.append("file", file);
+      const res = await fetch("/api/public/admin-upload", { method: "POST", body: form, credentials: "same-origin" });
+      if (!res.ok) throw new Error((await res.text()) || "Upload failed");
+      const json = (await res.json()) as { path: string; size: number };
+      setName(file.name);
+      onUploaded(json.path, json.size, file.name);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Upload failed");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <FieldWrap label={label}>
+      <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-dashed border-primary/40 bg-primary/5 p-4 text-sm">
+        <Upload className="size-4 text-primary" />
+        <span className="min-w-0 flex-1 truncate">
+          {busy ? "Uploading… please wait" : name ? `Uploaded: ${name}` : value ? "File attached — choose another to replace" : kind === "book" ? "Choose a PDF file" : "Choose the .apk file"}
+        </span>
+        <input type="file" className="sr-only" disabled={busy}
+          accept={kind === "book" ? "application/pdf,.pdf" : ".apk,.aab,application/vnd.android.package-archive"}
+          onChange={(e) => { const f = e.target.files?.[0]; if (f) void upload(f); e.target.value = ""; }} />
+      </label>
+      {error && <p className="text-xs text-destructive">{error}</p>}
+    </FieldWrap>
   );
 }
