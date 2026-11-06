@@ -21,7 +21,7 @@ interface SiteShellProps {
   hideNav?: boolean;
 }
 
-export function SiteShell({ children, showTopBar = true, hideNav = false }: SiteShellProps) {
+export function SiteShell({ children, showTopBar = true }: SiteShellProps) {
   const { theme, toggle } = useTheme();
   const [open, setOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -118,7 +118,7 @@ export function SiteShell({ children, showTopBar = true, hideNav = false }: Site
         </header>
       )}
 
-      {!hideNav && <main className="mx-auto w-full max-w-3xl flex-1">{children}</main>}
+      <main className="mx-auto w-full max-w-3xl flex-1">{children}</main>
 
       <footer className="relative overflow-hidden bg-navy text-navy-foreground">
         <div className="absolute -left-16 -top-16 size-56 rounded-full bg-primary/25 blur-3xl" />

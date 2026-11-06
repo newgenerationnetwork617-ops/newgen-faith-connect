@@ -107,11 +107,11 @@ function AuthPage() {
             <p className="text-xs text-white/75 mt-1">{user.email}</p>
           </section>
 
-          <Link to="/more" className="flex items-center gap-4 p-4 rounded-2xl bg-card border border-border">
+          <Link to="/" className="flex items-center gap-4 p-4 rounded-2xl bg-card border border-border">
             <div className="size-9 rounded-lg bg-primary/10 text-primary grid place-items-center">
               <UserIcon className="size-4" />
             </div>
-            <span className="flex-1 text-sm font-semibold">Settings & preferences</span>
+            <span className="flex-1 text-sm font-semibold">Back to the website</span>
           </Link>
 
           <Link to="/admin" className="flex items-center gap-4 p-4 rounded-2xl bg-card border border-border">
