@@ -59,31 +59,31 @@
 :root {
   --logo-surface: oklch(1 0 0);
   --radius: 1.25rem;
-  /* Sky Glory light: white, navy ink, sky cyan, gold */
-  --background: oklch(0.985 0.008 240);
-  --foreground: oklch(0.27 0.11 263);
+  /* Light & heavenly: clean white, navy headings, sky-blue highlights, soft gold */
+  --background: oklch(0.99 0.006 235);
+  --foreground: oklch(0.26 0.10 263);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.27 0.11 263);
+  --card-foreground: oklch(0.26 0.10 263);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.27 0.11 263);
-  --primary: oklch(0.67 0.14 235);
+  --popover-foreground: oklch(0.26 0.10 263);
+  --primary: oklch(0.60 0.15 240);
   --primary-foreground: oklch(1 0 0);
-  --primary-glow: oklch(0.80 0.11 225);
-  --secondary: oklch(0.95 0.02 240);
-  --secondary-foreground: oklch(0.27 0.11 263);
-  --muted: oklch(0.95 0.015 240);
-  --muted-foreground: oklch(0.50 0.05 258);
-  --accent: oklch(0.88 0.13 85);
-  --accent-foreground: oklch(0.27 0.11 263);
-  --destructive: oklch(0.62 0.22 25);
+  --primary-glow: oklch(0.78 0.11 222);
+  --secondary: oklch(0.96 0.02 230);
+  --secondary-foreground: oklch(0.26 0.10 263);
+  --muted: oklch(0.965 0.012 235);
+  --muted-foreground: oklch(0.50 0.04 258);
+  --accent: oklch(0.86 0.12 85);
+  --accent-foreground: oklch(0.26 0.10 263);
+  --destructive: oklch(0.60 0.22 25);
   --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.91 0.02 245);
-  --input: oklch(0.93 0.02 245);
-  --ring: oklch(0.67 0.14 235);
+  --border: oklch(0.92 0.018 240);
+  --input: oklch(0.93 0.018 240);
+  --ring: oklch(0.60 0.15 240);
   --navy: oklch(0.27 0.11 263);
   --navy-foreground: oklch(1 0 0);
-  --glass: oklch(0.27 0.11 263 / 5%);
-  --glass-border: oklch(0.27 0.11 263 / 10%);
+  --glass: oklch(0.60 0.15 240 / 5%);
+  --glass-border: oklch(0.26 0.10 263 / 9%);
 }
 
 .dark {
@@ -135,6 +135,7 @@
 
 @utility bg-gold-gradient { background: var(--gradient-gold); }
 @utility shadow-gold { box-shadow: var(--shadow-gold); }
+@utility bg-sky-wash { background: radial-gradient(120% 80% at 50% 0%, color-mix(in oklab, var(--primary-glow) 28%, transparent) 0%, transparent 60%), var(--background); }
 @utility glass { background: var(--glass); border: 1px solid var(--glass-border); backdrop-filter: blur(20px); }
 
 @keyframes ngn-rise { from { opacity: 0; transform: translateY(16px) scale(.96); } to { opacity: 1; transform: none; } }
