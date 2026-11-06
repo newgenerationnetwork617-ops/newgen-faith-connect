@@ -80,7 +80,7 @@ export const adminDelete = createServerFn({ method: "POST" })
         .select("file_path")
         .eq("id", data.id)
         .maybeSingle();
-      const path = existing?.file_path;
+      const path = (existing as { file_path?: string } | null)?.file_path;
       if (path) {
         const { error: removeError } = await supabaseAdmin.storage.from(bucket).remove([path]);
         if (removeError) console.error("Could not remove stored file:", removeError.message);
