@@ -16,6 +16,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DevotionalRouteImport } from './routes/devotional'
 import { Route as EventsRouteImport } from './routes/events'
+import { Route as GetAppRouteImport } from './routes/get-app'
 import { Route as PrayerRouteImport } from './routes/prayer'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as TeachingsRouteImport } from './routes/teachings'
@@ -56,6 +57,11 @@ const EventsRoute = EventsRouteImport.update({
   path: '/events',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GetAppRoute = GetAppRouteImport.update({
+  id: '/get-app',
+  path: '/get-app',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrayerRoute = PrayerRouteImport.update({
   id: '/prayer',
   path: '/prayer',
@@ -85,6 +91,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/devotional': typeof DevotionalRoute
   '/events': typeof EventsRoute
+  '/get-app': typeof GetAppRoute
   '/prayer': typeof PrayerRoute
   '/reset-password': typeof ResetPasswordRoute
   '/teachings': typeof TeachingsRoute
@@ -98,6 +105,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/devotional': typeof DevotionalRoute
   '/events': typeof EventsRoute
+  '/get-app': typeof GetAppRoute
   '/prayer': typeof PrayerRoute
   '/reset-password': typeof ResetPasswordRoute
   '/teachings': typeof TeachingsRoute
@@ -112,6 +120,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/devotional': typeof DevotionalRoute
   '/events': typeof EventsRoute
+  '/get-app': typeof GetAppRoute
   '/prayer': typeof PrayerRoute
   '/reset-password': typeof ResetPasswordRoute
   '/teachings': typeof TeachingsRoute
@@ -127,6 +136,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/devotional'
     | '/events'
+    | '/get-app'
     | '/prayer'
     | '/reset-password'
     | '/teachings'
@@ -140,6 +150,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/devotional'
     | '/events'
+    | '/get-app'
     | '/prayer'
     | '/reset-password'
     | '/teachings'
@@ -153,6 +164,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/devotional'
     | '/events'
+    | '/get-app'
     | '/prayer'
     | '/reset-password'
     | '/teachings'
@@ -167,6 +179,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   DevotionalRoute: typeof DevotionalRoute
   EventsRoute: typeof EventsRoute
+  GetAppRoute: typeof GetAppRoute
   PrayerRoute: typeof PrayerRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   TeachingsRoute: typeof TeachingsRoute
@@ -224,6 +237,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EventsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/get-app': {
+      id: '/get-app'
+      path: '/get-app'
+      fullPath: '/get-app'
+      preLoaderRoute: typeof GetAppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/prayer': {
       id: '/prayer'
       path: '/prayer'
@@ -263,6 +283,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   DevotionalRoute: DevotionalRoute,
   EventsRoute: EventsRoute,
+  GetAppRoute: GetAppRoute,
   PrayerRoute: PrayerRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   TeachingsRoute: TeachingsRoute,
