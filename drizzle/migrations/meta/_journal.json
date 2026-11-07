@@ -43,6 +43,13 @@
       "when": 1793862749449,
       "tag": "0005_books_app_files_storage_read",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1794009747209,
+      "tag": "0006_restrict_book_app_file_reads",
+      "breakpoints": true
     }
   ]
 }
