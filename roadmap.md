@@ -1,12 +1,9 @@
-# Upgrade roadmap
+# Roadmap
 
-- [x] Add phone installation metadata and NGN icons
-- [x] Repair complete Bible loading, including all one-chapter books
-- [x] Upgrade home devotional area and devotional reading screen
-- [x] Refine logo-aligned colors and phone layout
-- [x] Audit route metadata and verify key phone flows
-- [x] Offline access for recent Bible chapters and devotionals
-- [ ] User-controlled push notifications (blocked: Firebase connection was declined)
-- [ ] Remove all private-chat access from admin
-- [ ] Add persistent teaching likes, comments and sharing
-- [ ] Display splash before app content and review phone display
+- [x] Convert app into a ministry website (remove chat, Bible, community, live, watch, search)
+- [x] Light & heavenly look with top navigation and footer
+- [x] Pages: Home, About, Devotional, Teachings, Events, Prayer, Contact, Get the App
+- [x] Devotion books (PDF) uploaded from admin, read/download in Teachings → Books
+- [x] Android app file uploaded from admin, downloadable on Get the App page
+- [x] Teaching likes, comments and sharing on Teachings
+- [ ] Push notifications (blocked: Firebase connection was declined)
