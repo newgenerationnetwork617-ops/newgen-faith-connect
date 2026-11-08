@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Menu, X, Moon, Sun, MessageCircle, Mail, Youtube, Facebook, Instagram } from "lucide-react";
+import { Menu, X, Moon, Sun, MessageCircle, Mail, Youtube, Facebook, Instagram, ShieldCheck } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
 import logo from "@/assets/ngn-mark.png.asset.json";
 
@@ -66,6 +66,15 @@ export function SiteShell({ children, showTopBar = true }: SiteShellProps) {
             </nav>
 
             <div className="flex shrink-0 items-center gap-2">
+              <Link
+                to="/admin"
+                aria-label="Admin dashboard"
+                title="Admin dashboard"
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-border bg-card px-3 text-xs font-bold text-foreground transition hover:border-primary/40 hover:text-primary"
+              >
+                <ShieldCheck className="size-4" />
+                <span className="hidden sm:inline">Admin</span>
+              </Link>
               <button
                 onClick={toggle}
                 aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
@@ -105,6 +114,13 @@ export function SiteShell({ children, showTopBar = true }: SiteShellProps) {
                     {n.label}
                   </Link>
                 ))}
+                <Link
+                  to="/admin"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-foreground hover:bg-muted"
+                >
+                  <ShieldCheck className="size-4 text-primary" /> Admin dashboard
+                </Link>
                 <Link
                   to="/get-app"
                   onClick={() => setOpen(false)}
@@ -147,6 +163,9 @@ export function SiteShell({ children, showTopBar = true }: SiteShellProps) {
               ))}
               <Link to="/get-app" className="font-semibold text-accent hover:text-white">
                 Get the App
+              </Link>
+              <Link to="/admin" className="font-semibold hover:text-white">
+                Admin dashboard
               </Link>
             </div>
           </div>

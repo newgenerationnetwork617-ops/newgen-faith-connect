@@ -269,13 +269,19 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   });
 
   const rows = data?.rows ?? [];
+  const uploadShortcuts = [
+    { key: "devotionals", label: "Devotionals", note: "Add or schedule a devotional", icon: Sparkles },
+    { key: "teachings", label: "Teachings", note: "Add a video, audio or study", icon: Mic },
+    { key: "books", label: "Devotion books", note: "Upload a PDF book", icon: BookOpen },
+    { key: "app", label: "Android app", note: "Upload an APK around 40 MB", icon: Smartphone },
+  ];
 
   return (
     <div className="px-5 py-6 space-y-5">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-[10px] uppercase tracking-widest text-primary font-bold">Signed in</p>
-          <h1 className="font-display text-xl font-bold">Content Dashboard</h1>
+          <h1 className="font-display text-xl font-bold">Content & Uploads</h1>
         </div>
         <button
           onClick={onLogout}
@@ -284,6 +290,32 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
           <LogOut className="size-3.5" /> Lock
         </button>
       </div>
+
+      <section aria-label="Quick upload shortcuts" className="space-y-3">
+        <div>
+          <h2 className="font-display text-lg font-bold">Manage uploads</h2>
+          <p className="mt-1 text-xs text-muted-foreground">Choose what you want to add. Your APK can be uploaded directly, including files around 40 MB.</p>
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          {uploadShortcuts.map((shortcut) => (
+            <button
+              key={shortcut.key}
+              type="button"
+              onClick={() => {
+                const nextTab = TABS.find((item) => item.key === shortcut.key);
+                if (!nextTab) return;
+                setTabKey(nextTab.key);
+                setEditing(nextTab.creatable ? { published: true } : null);
+              }}
+              className="flex min-h-28 flex-col items-start gap-2 rounded-xl border border-border bg-card p-3 text-left transition hover:border-primary/40 hover:bg-primary/5"
+            >
+              <span className="grid size-9 place-items-center rounded-lg bg-primary/10 text-primary"><shortcut.icon className="size-4" /></span>
+              <span className="font-display text-sm font-bold">{shortcut.label}</span>
+              <span className="text-[11px] leading-snug text-muted-foreground">{shortcut.note}</span>
+            </button>
+          ))}
+        </div>
+      </section>
 
       <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-5 px-5">
         {TABS.map((t) => (
@@ -520,12 +552,17 @@ function FileField({ label, kind, value, onUploaded }: {
   const upload = async (file: File) => {
     setError(""); setBusy(true);
     try {
-      const form = new FormData();
-      form.append("kind", kind);
-      form.append("file", file);
-      const res = await fetch("/api/public/admin-upload", { method: "POST", body: form, credentials: "same-origin" });
+      const res = await fetch("/api/public/admin-upload", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        body: JSON.stringify({ kind, fileName: file.name, size: file.size, contentType: file.type || "application/octet-stream" }),
+      });
       if (!res.ok) throw new Error((await res.text()) || "Upload failed");
-      const json = (await res.json()) as { path: string; size: number };
+      const json = (await res.json()) as { bucket: string; path: string; token: string; size: number; contentType: string };
+      const { supabase } = await import("@/integrations/supabase/client");
+      const { error: uploadError } = await supabase.storage.from(json.bucket).uploadToSignedUrl(json.path, json.token, file, { contentType: json.contentType, upsert: false });
+      if (uploadError) throw new Error(uploadError.message);
       setName(file.name);
       onUploaded(json.path, json.size, file.name);
     } catch (e) {
@@ -540,12 +577,13 @@ function FileField({ label, kind, value, onUploaded }: {
       <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-dashed border-primary/40 bg-primary/5 p-4 text-sm">
         <Upload className="size-4 text-primary" />
         <span className="min-w-0 flex-1 truncate">
-          {busy ? "Uploading… please wait" : name ? `Uploaded: ${name}` : value ? "File attached — choose another to replace" : kind === "book" ? "Choose a PDF file" : "Choose the .apk file"}
+          {busy ? "Uploading directly to secure storage…" : name ? `Uploaded: ${name}` : value ? "File attached — choose another to replace" : kind === "book" ? "Choose a PDF file (up to 100 MB)" : "Choose an APK or AAB (up to 200 MB)"}
         </span>
         <input type="file" className="sr-only" disabled={busy}
           accept={kind === "book" ? "application/pdf,.pdf" : ".apk,.aab,application/vnd.android.package-archive"}
           onChange={(e) => { const f = e.target.files?.[0]; if (f) void upload(f); e.target.value = ""; }} />
       </label>
+      {kind === "app" && <p className="text-xs text-muted-foreground">40 MB APK files are supported. Upload happens directly to secure storage.</p>}
       {error && <p className="text-xs text-destructive">{error}</p>}
     </FieldWrap>
   );
