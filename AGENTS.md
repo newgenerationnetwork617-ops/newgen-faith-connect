@@ -13,4 +13,4 @@
 - Teaching engagement uses hashed device capabilities for guest ownership and server-validated writes; never expose ownership hashes publicly.
 - Share teaching links with a validated teaching query parameter, and reuse the player and engagement controls across Watch and Teachings to keep behavior consistent.
 - Render the welcome screen during SSR and gate page content until it finishes to prevent the home page flashing first.
-- Admin file uploads (books PDFs, app builds) go through `/api/public/admin-upload`, which re-checks the admin session cookie; storage reads are allowed only for files referenced by a published row. Why: workspace blocks public buckets and unpublished files must stay private.
+- Admin file uploads use `/api/public/admin-upload` to re-check the admin session and issue a short-lived signed token; the browser sends large files directly to private storage. Public reads are limited to files referenced by published rows. Why: avoid server request-body limits while keeping uploads and unpublished files private.
