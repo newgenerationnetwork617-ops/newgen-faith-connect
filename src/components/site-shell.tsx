@@ -115,6 +115,13 @@ export function SiteShell({ children, showTopBar = true }: SiteShellProps) {
                   </Link>
                 ))}
                 <Link
+                  to="/admin"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-foreground hover:bg-muted"
+                >
+                  <ShieldCheck className="size-4 text-primary" /> Admin dashboard
+                </Link>
+                <Link
                   to="/get-app"
                   onClick={() => setOpen(false)}
                   className="mt-2 rounded-xl bg-gold-gradient px-4 py-3 text-center text-sm font-bold uppercase tracking-widest text-accent-foreground shadow-gold"
