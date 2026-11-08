@@ -19,12 +19,14 @@ export const Route = createFileRoute("/api/public/admin-upload")({
           return new Response("Admin session required", { status: 401 });
         }
 
-        let body: { kind?: unknown; fileName?: unknown; size?: unknown; contentType?: unknown };
+        let parsed: unknown;
         try {
-          body = await request.json() as typeof body;
+          parsed = await request.json();
         } catch {
           return new Response("Invalid upload", { status: 400 });
         }
+        if (!parsed || typeof parsed !== "object") return new Response("Invalid upload", { status: 400 });
+        const body = parsed as { kind?: unknown; fileName?: unknown; size?: unknown; contentType?: unknown };
 
         const kind = typeof body.kind === "string" ? body.kind : "";
         const fileName = typeof body.fileName === "string" ? body.fileName.toLowerCase() : "";
