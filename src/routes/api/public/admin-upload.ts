@@ -44,7 +44,7 @@ export const Route = createFileRoute("/api/public/admin-upload")({
         }
         if (isApp && !isAndroidPackage) return new Response("Choose an APK or AAB file", { status: 400 });
         if (!Number.isSafeInteger(size) || size <= 0 || size > (isBook ? BOOK_MAX : APP_MAX)) {
-          return new Response(isBook ? "PDF must be smaller than 100 MB" : "App file must be smaller than 200 MB", {
+          return new Response(isBook ? "PDF must be 100 MB or smaller" : "App file must be 200 MB or smaller", {
             status: 413,
           });
         }
