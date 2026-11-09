@@ -273,7 +273,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
     { key: "devotionals", label: "Devotionals", note: "Add or schedule a devotional", icon: Sparkles },
     { key: "teachings", label: "Teachings", note: "Add a video, audio or study", icon: Mic },
     { key: "books", label: "Devotion books", note: "Upload a PDF book", icon: BookOpen },
-    { key: "app", label: "Android app", note: "Upload an APK around 40 MB", icon: Smartphone },
+    { key: "app", label: "Android app", note: "Upload an APK or AAB up to 200 MB", icon: Smartphone },
   ];
 
   return (
@@ -294,7 +294,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
       <section aria-label="Quick upload shortcuts" className="space-y-3">
         <div>
           <h2 className="font-display text-lg font-bold">Manage uploads</h2>
-          <p className="mt-1 text-xs text-muted-foreground">Choose what you want to add. Your APK can be uploaded directly, including files around 40 MB.</p>
+          <p className="mt-1 text-xs text-muted-foreground">Choose what you want to add. APK and AAB files up to 200 MB upload directly to secure storage.</p>
         </div>
         <div className="grid grid-cols-2 gap-2">
           {uploadShortcuts.map((shortcut) => (
@@ -583,7 +583,7 @@ function FileField({ label, kind, value, onUploaded }: {
           accept={kind === "book" ? "application/pdf,.pdf" : ".apk,.aab,application/vnd.android.package-archive"}
           onChange={(e) => { const f = e.target.files?.[0]; if (f) void upload(f); e.target.value = ""; }} />
       </label>
-      {kind === "app" && <p className="text-xs text-muted-foreground">40 MB APK files are supported. Upload happens directly to secure storage.</p>}
+      {kind === "app" && <p className="text-xs text-muted-foreground">APK and AAB files up to 200 MB are supported. Upload happens directly to secure storage.</p>}
       {error && <p className="text-xs text-destructive">{error}</p>}
     </FieldWrap>
   );
