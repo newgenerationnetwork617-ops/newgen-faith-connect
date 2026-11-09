@@ -185,20 +185,25 @@ export async function submitPrayer(input: { name: string; request: string; kind:
 
 /** Timed private-link to a stored devotion book. Pass download to force a file download. */
 export async function bookUrl(path: string, download?: string) {
-  const { data, error } = await supabase.storage
-    .from("books")
-    .createSignedUrl(path, 60 * 60, download ? { download } : undefined);
-  if (error) throw error;
-  return data.signedUrl;
+  const response = await fetch(`/api/public/file-download?kind=book&path=${encodeURIComponent(path)}`);
+  if (!response.ok) throw new Error("Book download unavailable");
+  const data = await response.json() as { url: string };
+  if (download) {
+    const url = new URL(data.url);
+    url.searchParams.set("download", download);
+    return url.toString();
+  }
+  return data.url;
 }
 
 /** Timed private-link to the Android app package. */
 export async function appFileUrl(path: string) {
-  const { data, error } = await supabase.storage.from("app-files").createSignedUrl(path, 60 * 60, {
-    download: "ngn-app.apk",
-  });
-  if (error) throw error;
-  return data.signedUrl;
+  const response = await fetch(`/api/public/file-download?kind=app&path=${encodeURIComponent(path)}`);
+  if (!response.ok) throw new Error("App download unavailable");
+  const data = await response.json() as { url: string };
+  const url = new URL(data.url);
+  url.searchParams.set("download", "ngn-app.apk");
+  return url.toString();
 }
 
 export function formatBytes(bytes: number | null) {

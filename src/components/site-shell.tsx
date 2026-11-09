@@ -73,7 +73,7 @@ export function SiteShell({ children, showTopBar = true }: SiteShellProps) {
                 className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-border bg-card px-3 text-xs font-bold text-foreground transition hover:border-primary/40 hover:text-primary"
               >
                 <ShieldCheck className="size-4" />
-                <span className="hidden min-[400px]:inline">Admin</span>
+                <span className="hidden md:inline">Admin</span>
               </Link>
               <button
                 onClick={toggle}
